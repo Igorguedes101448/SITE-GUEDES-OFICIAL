@@ -97,12 +97,29 @@ function updateAuthMenu() {
     const authMenuItems = document.getElementById('authMenuItems');
     if (!authMenuItems) return;
     
-    // Detectar se estamos numa subpasta (pages/) ou na raiz
-    const isInPagesFolder = window.location.pathname.includes('/pages/');
-    const dashboardPath = isInPagesFolder ? 'dashboard.html' : 'pages/dashboard.html';
-    const perfilPath = isInPagesFolder ? 'perfil.html' : 'pages/perfil.html';
-    const guiaPath = isInPagesFolder ? '../setup/guia.html' : 'setup/guia.html';
-    const loginPath = isInPagesFolder ? '../login.html' : 'login.html';
+    // Detectar se estamos numa subpasta (pages/, setup/) ou na raiz
+    const currentPath = window.location.pathname;
+    const isInPagesFolder = currentPath.includes('/pages/');
+    const isInSetupFolder = currentPath.includes('/setup/');
+    
+    let dashboardPath, perfilPath, guiaPath, loginPath;
+    
+    if (isInPagesFolder) {
+        dashboardPath = 'dashboard.html';
+        perfilPath = 'perfil.html';
+        guiaPath = '../setup/guia.html';
+        loginPath = '../login.html';
+    } else if (isInSetupFolder) {
+        dashboardPath = '../pages/dashboard.html';
+        perfilPath = '../pages/perfil.html';
+        guiaPath = 'guia.html';
+        loginPath = '../login.html';
+    } else {
+        dashboardPath = 'pages/dashboard.html';
+        perfilPath = 'pages/perfil.html';
+        guiaPath = 'setup/guia.html';
+        loginPath = 'login.html';
+    }
     
     if (isUserLoggedIn()) {
         const currentUser = getCurrentUser();

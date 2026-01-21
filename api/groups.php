@@ -648,6 +648,83 @@ if ($method === 'POST' && isset($input['action']) && $input['action'] === 'get_m
 }
 
 // ============================================
+// ATUALIZAR GRUPO
+// ============================================
+if ($method === 'POST' && isset($input['action']) && $input['action'] === 'update') {
+    $sessionToken = $input['sessionToken'] ?? '';
+    $groupId = $input['groupId'] ?? 0;
+    $name = trim($input['name'] ?? '');
+    $description = trim($input['description'] ?? '');
+    
+    if (empty($sessionToken)) {
+        jsonError('Token de sessão não fornecido.', 401);
+    }
+    
+    if (empty($name)) {
+        jsonError('Nome do grupo é obrigatório.', 400);
+    }
+    
+    try {
+        $db = getDB();
+        
+        // Verificar sessão
+        $stmt = $db->prepare("SELECT user_id FROM sessions WHERE session_token = ? AND (expires_at IS NULL OR expires_at > NOW())");
+        $stmt->execute([$sessionToken]);
+        $session = $stmt->fetch();
+        
+        if (!$session) {
+            jsonError('Sessão inválida ou expirada.', 401);
+        }
+        
+        $userId = $session['user_id'];
+        
+        // Verificar se o utilizador é admin do grupo
+        $stmt = $db->prepare("
+            SELECT gm.role, g.created_by 
+            FROM `group_members` gm
+            JOIN `groups` g ON gm.group_id = g.id
+            WHERE gm.group_id = ? AND gm.user_id = ?
+        ");
+        $stmt->execute([$groupId, $userId]);
+        $member = $stmt->fetch();
+        
+        if (!$member || ($member['role'] !== 'admin' && $member['created_by'] != $userId)) {
+            jsonError('Apenas administradores podem editar o grupo.', 403);
+        }
+        
+        // Verificar profanidade no nome
+        $nameCheck = checkProfanity($name);
+        if (!$nameCheck['isClean']) {
+            jsonError('O nome do grupo contém palavras inadequadas.', 400);
+        }
+        
+        // Verificar profanidade na descrição
+        if (!empty($description)) {
+            $descCheck = checkProfanity($description);
+            if (!$descCheck['isClean']) {
+                jsonError('A descrição do grupo contém palavras inadequadas.', 400);
+            }
+        }
+        
+        // Atualizar grupo
+        $stmt = $db->prepare("UPDATE `groups` SET name = ?, description = ?, updated_at = NOW() WHERE id = ?");
+        $stmt->execute([$name, $description, $groupId]);
+        
+        // Registar atividade
+        $stmt = $db->prepare("
+            INSERT INTO activities (user_id, type, description) 
+            VALUES (?, 'group_update', ?)
+        ");
+        $stmt->execute([$userId, "Atualizou o grupo: $name"]);
+        
+        jsonSuccess('Grupo atualizado com sucesso!');
+        
+    } catch (PDOException $e) {
+        jsonError('Erro ao atualizar grupo: ' . $e->getMessage(), 500);
+    }
+}
+
+// ============================================
 // APAGAR GRUPO
 // ============================================
 if ($method === 'POST' && isset($input['action']) && $input['action'] === 'delete') {

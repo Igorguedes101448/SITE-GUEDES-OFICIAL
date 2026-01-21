@@ -5,22 +5,22 @@
 
 :root {
     /* ===== MODO CLARO - Cores Primárias ===== */
-    --primary-color: #e8733f;        /* Coral suave - cor principal */
-    --primary-dark: #d96640;         /* Coral mais escuro */
-    --primary-light: #f08f66;        /* Coral mais claro */
+    --primary-color: #ff6b35;        /* Laranja quente - cor principal */
+    --primary-dark: #e85a28;         /* Laranja mais escuro */
+    --primary-light: #ff8558;        /* Laranja mais claro */
     
-    --secondary-color: #6b5b4e;      /* Castanho suave - substitui azul */
-    --secondary-dark: #564838;       /* Castanho mais escuro */
-    --secondary-light: #8a7968;      /* Castanho mais claro */
+    --secondary-color: #8B4513;      /* Castanho sela - substitui azul */
+    --secondary-dark: #6b3410;       /* Castanho mais escuro */
+    --secondary-light: #a0522d;      /* Castanho mais claro */
     
-    --accent-color: #f4a261;         /* Laranja suave dourado */
-    --accent-dark: #e89044;          /* Dourado mais escuro */
-    --accent-light: #f7b888;         /* Dourado mais claro */
+    --accent-color: #f7b32b;         /* Amarelo dourado */
+    --accent-dark: #d99b1f;          /* Dourado mais escuro */
+    --accent-light: #ffc550;         /* Dourado mais claro */
     
     --success-color: #2a9d8f;        /* Verde água */
-    --danger-color: #e76f51;         /* Vermelho suave */
-    --warning-color: #f4a261;        /* Laranja suave */
-    --info-color: #e9c46a;           /* Amarelo suave - substitui azul ciano */
+    --danger-color: #e63946;         /* Vermelho */
+    --warning-color: #f77f00;        /* Laranja médio */
+    --info-color: #ff9966;           /* Laranja suave - substitui azul ciano */
     
     /* ===== Fundos e Superfícies ===== */
     --bg-primary: #fafafa;           /* Fundo principal claro */
@@ -504,19 +504,20 @@ body {
     display: inline-block;
     padding: 12px 28px;
     background-color: var(--primary-color);
-    color: white;
+    color: var(--text-inverse);
     text-decoration: none;
-    border-radius: 10px;
+    border-radius: var(--border-radius-sm);
     font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: var(--transition-fast);
     border: none;
     cursor: pointer;
     font-size: 1rem;
-    letter-spacing: 0.3px;
 }
 
 .btn:hover {
-    transform: translateY(-3px);
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
 .btn:active {
@@ -524,54 +525,44 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #e8733f 0%, #d96640 100%);
-    box-shadow: 0 4px 12px rgba(232, 115, 63, 0.25);
+    background-color: var(--primary-color);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #d96640 0%, #c75a38 100%);
-    box-shadow: 0 6px 16px rgba(232, 115, 63, 0.35);
+    background-color: var(--primary-dark);
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, #6b5b4e 0%, #564838 100%);
-    box-shadow: 0 4px 12px rgba(107, 91, 78, 0.25);
+    background-color: var(--secondary-color);
 }
 
 .btn-secondary:hover {
-    background: linear-gradient(135deg, #564838 0%, #453a2d 100%);
-    box-shadow: 0 6px 16px rgba(107, 91, 78, 0.35);
+    background-color: var(--secondary-dark);
 }
 
 .btn-success {
-    background: linear-gradient(135deg, #2a9d8f 0%, #238c7f 100%);
-    box-shadow: 0 4px 12px rgba(42, 157, 143, 0.25);
+    background-color: var(--success-color);
 }
 
 .btn-success:hover {
-    background: linear-gradient(135deg, #238c7f 0%, #1d7970 100%);
-    box-shadow: 0 6px 16px rgba(42, 157, 143, 0.35);
+    background-color: #238c7f;
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, #e76f51 0%, #d95f45 100%);
-    box-shadow: 0 4px 12px rgba(231, 111, 81, 0.25);
+    background-color: var(--danger-color);
 }
 
 .btn-danger:hover {
-    background: linear-gradient(135deg, #d95f45 0%, #c74f39 100%);
-    box-shadow: 0 6px 16px rgba(231, 111, 81, 0.35);
+    background-color: #d32f3e;
 }
 
 .btn-warning {
-    background: linear-gradient(135deg, #f4a261 0%, #e89044 100%);
-    box-shadow: 0 4px 12px rgba(244, 162, 97, 0.25);
+    background-color: var(--warning-color);
     color: var(--text-inverse);
 }
 
 .btn-warning:hover {
-    background: linear-gradient(135deg, #e89044 0%, #d67e38 100%);
-    box-shadow: 0 6px 16px rgba(244, 162, 97, 0.35);
+    background-color: #e57200;
 }
 
 .btn-outline {
@@ -587,11 +578,10 @@ body {
 
 /* Botões pequenos */
 .btn-sm {
-    padding: 8px 18px;
-    font-size: 0.85rem;
-    font-weight: 700;
+    padding: 6px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
     min-width: 40px;
-    letter-spacing: 0.3px;
 }
 
 /* Melhorias visuais para convites */
@@ -817,18 +807,18 @@ body {
 
 .recipe-card {
     background-color: var(--bg-card);
-    border-radius: 16px;
+    border-radius: var(--border-radius);
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    border: 2px solid transparent;
     cursor: pointer;
 }
 
 .recipe-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-    border-color: var(--primary-light);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent-color);
 }
 
 .recipe-image {
@@ -850,52 +840,29 @@ body {
 }
 
 .recipe-content {
-    padding: 24px;
+    padding: 20px;
 }
 
 .recipe-title {
-    font-size: 1.5rem;
-    color: var(--text-primary);
-    margin-bottom: 12px;
-    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--secondary-color);
+    margin-bottom: 10px;
 }
 
 .recipe-category {
     display: inline-block;
-    padding: 6px 14px;
-    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
-    color: white;
+    padding: 5px 12px;
+    background-color: var(--accent-color);
+    color: var(--text-inverse);
     border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 700;
+    font-size: 0.85rem;
+    font-weight: 600;
     margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 8px rgba(244, 162, 97, 0.3);
 }
 
 .recipe-description {
     color: var(--text-secondary);
     line-height: 1.6;
-    margin-bottom: 15px;
-}
-
-/* Ações das receitas privadas */
-.recipe-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 18px;
-    flex-wrap: wrap;
-}
-
-.recipe-meta {
-    display: flex;
-    gap: 15px;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border-color);
-    font-size: 0.9rem;
-    color: var(--text-secondary);
 }
 
 /* ============================================
@@ -1249,28 +1216,25 @@ body {
 
 .badge {
     display: inline-block;
-    padding: 5px 12px;
-    border-radius: 14px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
 .badge-primary {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-inverse);
 }
 
 .badge-secondary {
-    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-dark) 100%);
-    color: white;
+    background-color: var(--secondary-color);
+    color: var(--text-inverse);
 }
 
 .badge-success {
-    background: linear-gradient(135deg, var(--success-color) 0%, #238c7f 100%);
-    color: white;
+    background-color: var(--success-color);
+    color: var(--text-inverse);
 }
 
 /* ============================================
