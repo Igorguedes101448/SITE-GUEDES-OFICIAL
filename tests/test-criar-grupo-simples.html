@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Criar Grupo - Simples</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #ff6b35; margin-bottom: 20px; }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #ff6b35;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #ff6b35;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #e55a2b;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+        #status.success {
+            display: block;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        #status.error {
+            display: block;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        #status.info {
+            display: block;
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .debug {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🍳 Teste - Criar Grupo</h1>
+        
+        <form id="createGroupForm">
+            <div class="form-group">
+                <label for="groupName">Nome do Grupo:</label>
+                <input type="text" id="groupName" name="groupName" value="familia guedes" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="groupDescription">Descrição:</label>
+                <textarea id="groupDescription" name="groupDescription">receitas tops</textarea>
+            </div>
+            
+            <button type="submit" id="submitBtn">Criar Grupo</button>
+        </form>
+        
+        <div id="status"></div>
+        
+        <div class="debug" id="debug"></div>
+    </div>
+
+    <script src="js/auth-api.js"></script>
+    <script src="js/main-api.js"></script>
+    <script src="js/profanity-filter.js"></script>
+    <script>
+        const statusDiv = document.getElementById('status');
+        const debugDiv = document.getElementById('debug');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        function showStatus(message, type) {
+            statusDiv.textContent = message;
+            statusDiv.className = type;
+            log(`[STATUS] ${type.toUpperCase()}: ${message}`);
+        }
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            debugDiv.innerHTML += `[${timestamp}] ${message}<br>`;
+            debugDiv.scrollTop = debugDiv.scrollHeight;
+            console.log(message);
+        }
+        
+        // Verificar login ao carregar
+        document.addEventListener('DOMContentLoaded', async function() {
+            log('=== INICIANDO DIAGNÓSTICO ===');
+            
+            const sessionToken = getSessionToken();
+            log(`Token de sessão: ${sessionToken ? 'ENCONTRADO' : 'NÃO ENCONTRADO'}`);
+            
+            if (!sessionToken) {
+                showStatus('ERRO: Você precisa fazer login primeiro!', 'error');
+                submitBtn.disabled = true;
+                log('⚠️ Faça login em: ' + window.location.origin + '/siteguedes/login.html');
+                return;
+            }
+            
+            try {
+                const currentUser = await getCurrentUser();
+                if (currentUser) {
+                    log(`✅ Usuário logado: ${currentUser.username} (ID: ${currentUser.id})`);
+                    showStatus(`Logado como: ${currentUser.username}`, 'info');
+                } else {
+                    log('❌ Não foi possível obter dados do usuário');
+                    showStatus('Sessão inválida. Por favor, faça login novamente.', 'error');
+                    submitBtn.disabled = true;
+                }
+            } catch (error) {
+                log(`❌ Erro ao verificar usuário: ${error.message}`);
+                showStatus('Erro ao verificar sessão', 'error');
+                submitBtn.disabled = true;
+            }
+            
+            log('=== FIM DO DIAGNÓSTICO ===\n');
+        });
+        
+        // Enviar formulário
+        document.getElementById('createGroupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            log('\n=== TENTANDO CRIAR GRUPO ===');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Criando...';
+            
+            const groupName = document.getElementById('groupName').value.trim();
+            const groupDescription = document.getElementById('groupDescription').value.trim();
+            
+            log(`Nome: "${groupName}"`);
+            log(`Descrição: "${groupDescription}"`);
+            
+            // Verificar profanidade
+            log('Verificando profanidade...');
+            const nameCheck = checkProfanity(groupName);
+            log(`Nome limpo: ${nameCheck.isClean}`);
+            
+            if (!nameCheck.isClean) {
+                showStatus('Nome contém palavras inadequadas', 'error');
+                log(`❌ Palavras encontradas: ${nameCheck.foundWords.join(', ')}`);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Criar Grupo';
+                return;
+            }
+            
+            if (groupDescription) {
+                const descCheck = checkProfanity(groupDescription);
+                log(`Descrição limpa: ${descCheck.isClean}`);
+                
+                if (!descCheck.isClean) {
+                    showStatus('Descrição contém palavras inadequadas', 'error');
+                    log(`❌ Palavras encontradas: ${descCheck.foundWords.join(', ')}`);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Criar Grupo';
+                    return;
+                }
+            }
+            
+            // Criar grupo
+            try {
+                log('Enviando requisição para API...');
+                
+                const groupData = {
+                    name: groupName,
+                    description: groupDescription
+                };
+                
+                const result = await saveGroup(groupData);
+                
+                log('Resposta recebida:');
+                log(JSON.stringify(result, null, 2));
+                
+                if (result.success) {
+                    showStatus('✅ Grupo criado com sucesso!', 'success');
+                    log(`✅ ID do grupo: ${result.data?.group?.id}`);
+                    
+                    // Limpar formulário
+                    document.getElementById('createGroupForm').reset();
+                } else {
+                    showStatus(`❌ Erro: ${result.message}`, 'error');
+                    log(`❌ ${result.message}`);
+                }
+            } catch (error) {
+                showStatus(`❌ Erro na requisição: ${error.message}`, 'error');
+                log(`❌ EXCEÇÃO: ${error.message}`);
+                log(error.stack);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Criar Grupo';
+                log('=== FIM DA TENTATIVA ===\n');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupos - ChefGuedes</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html">ChefGuedes</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="explorar-receitas.html">Explorar Receitas</a></li>
+                <li id="authMenuItems"></li>
+            </ul>
+            <div id="notificationDropdown" class="notification-dropdown" style="display: none;">
+                <button class="notification-btn" onclick="toggleNotifications()">
+                    <span id="notificationBadge" class="notification-badge" style="display: none;">0</span>
+                </button>
+                <div id="notificationMenu" class="notification-menu">
+                    <div class="notification-header">
+                        <h4>Notificações</h4>
+                        <button onclick="markAllRead()" style="background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 0.9rem;">Marcar todas como lidas</button>
+                    </div>
+                    <div id="notificationList" class="notification-list">
+                        <p style="text-align: center; color: var(--text-secondary); padding: 20px;">Sem notificações</p>
+                    </div>
+                </div>
+            </div>
+            <div id="profileDropdown" class="profile-dropdown" style="display: none;">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <img id="profileImage" src="" alt="Perfil" class="profile-image">
+                    <span id="profileName"></span>
+                </button>
+                <div id="profileMenu" class="profile-menu">
+                    <a href="perfil.html">Meu Perfil</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="receitas-privadas.html">Receitas Privadas</a>
+                    <a href="#" onclick="logout(); return false;">Sair</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Meus Grupos</h1>
+            <p>Organize grupos e planeie refeições em conjunto</p>
+        </div>
+
+        <button class="btn btn-primary mb-3" onclick="openModal('modalNovoGrupo')">+ Criar Novo Grupo</button>
+
+        <div id="groupsList"></div>
+
+        <!-- Tabs para grupo selecionado -->
+        <div id="groupDetails" style="display: none;">
+            <div class="dashboard-card" style="margin-top: 30px;">
+                <h3 id="groupName"></h3>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('membros', event)">Membros</button>
+                    <button class="tab" onclick="switchTab('agendamento', event)">Agendamento Semanal</button>
+                </div>
+
+                <div id="tabMembros" class="tab-content active"></div>
+                <div id="tabAgendamento" class="tab-content"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 ChefGuedes. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Modal Novo Grupo -->
+    <div id="modalNovoGrupo" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Criar Novo Grupo</h3>
+                <button class="modal-close" onclick="closeModal('modalNovoGrupo')">&times;</button>
+            </div>
+            <form onsubmit="submitGroup(event)">
+                <div class="form-group">
+                    <label for="groupName">Nome do Grupo:</label>
+                    <input type="text" id="groupNameInput" required>
+                </div>
+                <div class="form-group">
+                    <label for="groupDescription">Descrição:</label>
+                    <textarea id="groupDescription" rows="3" placeholder="Descrição opcional do grupo..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modalNovoGrupo')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Criar Grupo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Refeição -->
+    <div id="modalAddMeal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Refeição</h3>
+                <button class="modal-close" onclick="closeModal('modalAddMeal')">&times;</button>
+            </div>
+            <form onsubmit="submitMeal(event)">
+                <input type="hidden" id="mealDate">
+                <div class="form-group">
+                    <label>Tipo de Refeição:</label>
+                    <select id="mealType" required>
+                        <option value="Pequeno-almoço">Pequeno-almoço</option>
+                        <option value="Almoço">Almoço</option>
+                        <option value="Jantar">Jantar</option>
+                        <option value="Lanche">Lanche</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Receita:</label>
+                    <select id="mealRecipe" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Notas (opcional):</label>
+                    <textarea id="mealNotes"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modalAddMeal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Membro -->
+    <div id="modalAddMember" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Membro ao Grupo</h3>
+                <button class="modal-close" onclick="closeModal('modalAddMember')">&times;</button>
+            </div>
+            <form onsubmit="submitAddMember(event)">
+                <div class="form-group">
+                    <label for="memberCode">Código do Utilizador:</label>
+                    <input 
+                        type="text" 
+                        id="memberCode" 
+                        required 
+                        placeholder="Ex: ABC123"
+                        maxlength="6"
+                        style="text-transform: uppercase; font-family: 'Courier New', monospace; font-size: 1.2rem; letter-spacing: 2px;"
+                        oninput="this.value = this.value.toUpperCase()">
+                    <small style="color: var(--text-secondary); display: block; margin-top: 5px;">
+                        Insira o código de 6 caracteres do utilizador que deseja adicionar
+                    </small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modalAddMember')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Adicionar Membro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/auth-api.js"></script>
+    <script src="../js/main-api.js"></script>
+    <script src="../js/profanity-filter.js"></script>
+    <script src="../js/clear-recipes.js"></script>
+    <script>
+        // Proteger rota
+        (async function() {
+            await requireAuth();
+            await loadGroups();
+            
+            // Verificar se há parâmetro de tab na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const tab = urlParams.get('tab');
+            if (tab === 'agendamento') {
+                // Se há grupos, selecionar o primeiro automaticamente
+                const userGroups = await getUserGroups();
+                if (userGroups.length > 0) {
+                    selectGroup(userGroups[0]);
+                    setTimeout(() => {
+                        const agendamentoTab = document.querySelector('.tab[onclick*="agendamento"]');
+                        if (agendamentoTab) agendamentoTab.click();
+                    }, 100);
+                }
+            }
+        })();
+
+        // Ativar validação em tempo real para campos de grupo
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                validateFieldRealtime('groupNameInput', 'O nome do grupo');
+                validateFieldRealtime('groupDescription', 'A descrição');
+            }, 500);
+        });
+
+        let currentGroupId = null;
+        let currentWeekStart = getWeekStart(new Date());
+
+        async function loadGroups() {
+            const userGroups = await getUserGroups();
+            
+            const container = document.getElementById('groupsList');
+            
+            if (userGroups.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary);">Ainda não pertence a nenhum grupo. Clique em "Criar Novo Grupo" para começar ou aguarde um convite.</p>';
+                return;
+            }
+            
+            container.innerHTML = userGroups.map(group => `
+                <div class="dashboard-card" style="cursor: pointer;" onclick="selectGroup('${group.id}')">
+                    <h3>${group.name}</h3>
+                    <p style="color: var(--text-secondary);">${group.description || 'Sem descrição'}</p>
+                    <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 10px;">${group.member_count || 0} membros • ${group.user_role === 'admin' ? 'Administrador' : 'Membro'}</p>
+                </div>
+            `).join('');
+        }
+
+        async function submitGroup(e) {
+            e.preventDefault();
+            
+            console.log('submitGroup chamado');
+            
+            // Verificar se o utilizador está logado
+            const sessionToken = getSessionToken();
+            if (!sessionToken) {
+                showError('É necessário fazer login para criar um grupo.');
+                console.error('Token de sessão não encontrado');
+                return;
+            }
+            
+            const groupData = {
+                name: document.getElementById('groupNameInput').value,
+                description: document.getElementById('groupDescription').value
+            };
+            
+            console.log('Dados do grupo:', groupData);
+            
+            // Validar se o nome está preenchido
+            if (!groupData.name || groupData.name.trim() === '') {
+                showError('Por favor, insira o nome do grupo.');
+                return;
+            }
+            
+            // Validar nome do grupo
+            const nameCheck = checkProfanity(groupData.name);
+            console.log('Verificação de profanidade do nome:', nameCheck);
+            
+            if (!nameCheck.isClean) {
+                showError('O nome do grupo contém palavras inadequadas.');
+                showFieldValidation('groupNameInput', false, 'O nome contém palavras inadequadas.');
+                return;
+            }
+            
+            // Validar descrição do grupo
+            if (groupData.description) {
+                const descCheck = checkProfanity(groupData.description);
+                console.log('Verificação de profanidade da descrição:', descCheck);
+                
+                if (!descCheck.isClean) {
+                    showError('A descrição do grupo contém palavras inadequadas.');
+                    showFieldValidation('groupDescription', false, 'A descrição contém palavras inadequadas.');
+                    return;
+                }
+            }
+            
+            console.log('Chamando saveGroup...');
+            
+            try {
+                const result = await saveGroup(groupData);
+                console.log('Resultado do saveGroup:', result);
+                
+                if (result.success) {
+                    closeModal('modalNovoGrupo');
+                    e.target.reset();
+                    await loadGroups();
+                    showSuccess('Grupo criado com sucesso!');
+                } else {
+                    showError(result.message || 'Erro ao criar grupo.');
+                }
+            } catch (error) {
+                console.error('Erro ao criar grupo:', error);
+                showError('Erro ao criar grupo. Por favor, tente novamente.');
+            }
+        }
+
+        async function selectGroup(groupId) {
+            currentGroupId = groupId;
+            const group = await getGroupById(groupId);
+            
+            if (!group) {
+                showError('Grupo não encontrado.');
+                return;
+            }
+            
+            document.getElementById('groupDetails').style.display = 'block';
+            document.getElementById('groupName').textContent = group.name;
+            
+            switchTab('membros', null);
+        }
+
+        function switchTab(tabName, event) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            // Se event existir, adicionar active ao target
+            if (event && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // Se não houver event, encontrar a tab correta pelo nome
+                const tabButton = document.querySelector(`.tab[onclick*="'${tabName}'"]:not([onclick*="event"])`);
+                if (tabButton) {
+                    tabButton.classList.add('active');
+                }
+            }
+            
+            if (tabName === 'membros') {
+                document.getElementById('tabMembros').classList.add('active');
+                loadMembers();
+            } else if (tabName === 'agendamento') {
+                document.getElementById('tabAgendamento').classList.add('active');
+                loadSchedule();
+            }
+        }
+
+        async function loadMembers() {
+            const members = await getGroupMembers(currentGroupId);
+            const isAdmin = await isGroupAdmin(currentGroupId);
+            const container = document.getElementById('tabMembros');
+            
+            if (!members || members.length === 0) {
+                container.innerHTML = `
+                    <div style="margin-top: 20px;">
+                        <p style="color: var(--text-secondary);">Nenhum membro no grupo.</p>
+                        ${isAdmin ? '<button class="btn btn-primary" style="margin-top: 15px;" onclick="openModal(\'modalAddMember\')">+ Adicionar Membro</button>' : ''}
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <div style="margin-top: 20px;">
+                    ${isAdmin ? '<button class="btn btn-primary" style="margin-bottom: 20px;" onclick="openModal(\'modalAddMember\')">+ Adicionar Membro</button>' : ''}
+                    ${members.map(member => `
+                        <div class="activity-item" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>${member.username}</strong>
+                                <span style="color: ${member.role === 'admin' ? 'var(--primary-color)' : 'var(--text-secondary)'}; font-size: 0.9rem; margin-left: 10px;">
+                                    ${member.role === 'admin' ? 'Admin' : 'Membro'}
+                                </span>
+                            </div>
+                            ${isAdmin && member.role !== 'admin' ? `
+                                <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.9rem;" onclick="removeMember(${member.user_id})">Remover</button>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                    ${!isAdmin ? '<p style="color: var(--text-secondary); font-style: italic; margin-top: 20px; font-size: 0.9rem;">Apenas administradores podem adicionar ou remover membros.</p>' : ''}
+                </div>
+            `;
+        }
+
+        async function loadSchedule() {
+            const container = document.getElementById('tabAgendamento');
+            const weekDays = getWeekDays(currentWeekStart);
+            const weekEnd = getWeekEnd(currentWeekStart);
+            const isAdmin = await isGroupAdmin(currentGroupId);
+            
+            // Buscar agendamentos do grupo
+            const startDate = getDateForInput(currentWeekStart);
+            const endDate = getDateForInput(weekEnd);
+            const schedules = await getSchedules(startDate, endDate, currentGroupId);
+            
+            container.innerHTML = `
+                <div class="week-navigation" style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+                    <button class="btn btn-outline" onclick="changeWeek(-1)">← Semana Anterior</button>
+                    <h3 style="margin: 0;">${formatDate(currentWeekStart)} - ${formatDate(weekEnd)}</h3>
+                    <button class="btn btn-outline" onclick="changeWeek(1)">Próxima Semana →</button>
+                </div>
+                ${!isAdmin ? '<p style="color: var(--text-secondary); font-style: italic; margin-bottom: 15px; font-size: 0.9rem;">Apenas administradores podem adicionar ou remover refeições agendadas.</p>' : ''}
+                <div class="schedule-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                    ${weekDays.map(day => {
+                        const dateStr = getDateForInput(day);
+                        const daySchedules = schedules.filter(s => s.scheduled_date === dateStr);
+                        
+                        return `
+                            <div class="day-card" style="background: var(--bg-secondary); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <h4 style="margin: 0 0 15px 0; color: var(--primary-color);">${getDayName(day)} - ${day.getDate()}/${day.getMonth() + 1}</h4>
+                                ${daySchedules.map(schedule => {
+                                    return `
+                                        <div class="meal-item" style="background: var(--bg-color); padding: 10px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: start;">
+                                            <div style="flex: 1;">
+                                                <div class="meal-type" style="font-weight: 600; color: var(--primary-color); font-size: 0.9rem;">${schedule.meal_type}</div>
+                                                <div class="meal-recipe" style="margin-top: 5px;">${schedule.title || 'Receita'}</div>
+                                                ${schedule.notes ? `<div class="meal-notes" style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 5px;">${schedule.notes}</div>` : ''}
+                                            </div>
+                                            ${isAdmin ? `<button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.9rem;" onclick="removeSchedule('${schedule.id}')">×</button>` : ''}
+                                        </div>
+                                    `;
+                                }).join('')}
+                                ${isAdmin ? `<button class="btn btn-outline" style="width: 100%; margin-top: 10px;" onclick="openAddMeal('${dateStr}')">+ Adicionar</button>` : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function changeWeek(direction) {
+            const current = new Date(currentWeekStart);
+            current.setDate(current.getDate() + (direction * 7));
+            currentWeekStart = getWeekStart(current);
+            loadSchedule();
+        }
+
+        async function openAddMeal(dateStr) {
+            // Verificar se é admin
+            const isAdmin = await isGroupAdmin(currentGroupId);
+            if (!isAdmin) {
+                showError('Apenas administradores podem adicionar refeições agendadas.');
+                return;
+            }
+            
+            document.getElementById('mealDate').value = dateStr;
+            
+            // Carregar receitas disponíveis
+            const recipes = await getAllRecipes();
+            const select = document.getElementById('mealRecipe');
+            
+            if (recipes.length === 0) {
+                select.innerHTML = '<option value="">Nenhuma receita disponível</option>';
+                showError('Não há receitas disponíveis. Crie uma receita primeiro.');
+                return;
+            }
+            
+            select.innerHTML = '<option value="">Selecione uma receita</option>' + 
+                recipes.map(r => `<option value="${r.id}">${r.title}</option>`).join('');
+            
+            openModal('modalAddMeal');
+        }
+
+        async function submitMeal(e) {
+            e.preventDefault();
+            
+            const recipeId = document.getElementById('mealRecipe').value;
+            if (!recipeId) {
+                showError('Selecione uma receita.');
+                return;
+            }
+            
+            // Obter o nome da receita selecionada
+            const select = document.getElementById('mealRecipe');
+            const recipeTitle = select.options[select.selectedIndex].text;
+            
+            const scheduleData = {
+                groupId: currentGroupId,
+                recipeId: recipeId,
+                title: recipeTitle,
+                scheduledDate: document.getElementById('mealDate').value,
+                mealType: document.getElementById('mealType').value,
+                description: document.getElementById('mealNotes').value
+            };
+            
+            const result = await createSchedule(scheduleData);
+            
+            if (result.success) {
+                closeModal('modalAddMeal');
+                e.target.reset();
+                await loadSchedule();
+                showSuccess('Refeição agendada com sucesso!');
+            } else {
+                showError(result.message || 'Erro ao agendar refeição.');
+            }
+        }
+
+        async function removeSchedule(scheduleId) {
+            // Verificar se é admin
+            const isAdmin = await isGroupAdmin(currentGroupId);
+            if (!isAdmin) {
+                showError('Apenas administradores podem remover refeições agendadas.');
+                return;
+            }
+            
+            if (confirm('Remover esta refeição do agendamento?')) {
+                const result = await deleteSchedule(scheduleId);
+                if (result.success) {
+                    await loadSchedule();
+                    showSuccess('Refeição removida.');
+                } else {
+                    showError(result.message || 'Erro ao remover refeição.');
+                }
+            }
+        }
+
+        async function submitAddMember(e) {
+            e.preventDefault();
+            
+            const userCode = document.getElementById('memberCode').value.trim().toUpperCase();
+            
+            if (userCode.length !== 6) {
+                showError('O código deve ter exatamente 6 caracteres.');
+                return;
+            }
+            
+            const result = await addGroupMember(currentGroupId, userCode);
+            
+            if (result.success) {
+                closeModal('modalAddMember');
+                document.getElementById('memberCode').value = '';
+                await loadMembers();
+                showSuccess('Membro adicionado com sucesso!');
+            } else {
+                showError(result.message || 'Erro ao adicionar membro.');
+            }
+        }
+
+        async function removeMember(userId) {
+            if (!confirm('Tem certeza que deseja remover este membro do grupo?')) {
+                return;
+            }
+            
+            const result = await removeGroupMember(currentGroupId, userId);
+            
+            if (result.success) {
+                await loadMembers();
+                showSuccess('Membro removido com sucesso!');
+            } else {
+                showError(result.message || 'Erro ao remover membro.');
+            }
+        }
+    </script>
+</body>
+</html>

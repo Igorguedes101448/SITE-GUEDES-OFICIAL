@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Permissões de Grupo - ChefGuedes</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html">ChefGuedes</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>🔒 Teste de Permissões de Grupo</h1>
+            <p>Verificar que apenas administradores podem convidar membros</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Status de Login</h3>
+            <div id="loginStatus" style="padding: 15px; background: var(--bg-secondary); border-radius: 8px; margin-top: 15px;">
+                Verificando...
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Selecionar Grupo para Testar</h3>
+            <select id="groupSelect" class="form-input" onchange="selectTestGroup()" style="width: 100%; margin-bottom: 15px;">
+                <option value="">Carregando grupos...</option>
+            </select>
+            <div id="groupInfo" style="padding: 15px; background: var(--bg-secondary); border-radius: 8px; margin-top: 15px; display: none;">
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Membros do Grupo</h3>
+            <div id="membersList" style="padding: 15px; background: var(--bg-secondary); border-radius: 8px; margin-top: 15px;">
+                Selecione um grupo acima
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Testar Adicionar Membro</h3>
+            <div id="addMemberSection" style="padding: 15px; background: var(--bg-secondary); border-radius: 8px; margin-top: 15px; display: none;">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Código do Utilizador (6 caracteres):</label>
+                    <input type="text" id="testUserCode" class="form-input" maxlength="6" placeholder="Ex: ABC123" style="width: 100%; text-transform: uppercase;">
+                </div>
+                <button onclick="testAddMember()" class="btn btn-primary" style="width: 100%;">Tentar Adicionar Membro</button>
+            </div>
+            <div id="addMemberResult" style="margin-top: 15px; padding: 15px; background: var(--bg-primary); border-radius: 8px; display: none;">
+            </div>
+        </div>
+
+        <div class="dashboard-card" style="background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(0, 78, 137, 0.1)); border: 2px solid var(--primary-color);">
+            <h3>📋 Instruções de Teste</h3>
+            <ol style="line-height: 1.8;">
+                <li><strong>Teste como Administrador:</strong>
+                    <ul style="margin-top: 10px;">
+                        <li>Faça login com uma conta que criou um grupo</li>
+                        <li>Selecione o grupo na lista</li>
+                        <li>Verifique que aparece "👑 Você é ADMINISTRADOR"</li>
+                        <li>O botão "Adicionar Membro" deve estar <strong>visível</strong></li>
+                        <li>Tente adicionar um membro - deve funcionar</li>
+                    </ul>
+                </li>
+                <li style="margin-top: 15px;"><strong>Teste como Membro Regular:</strong>
+                    <ul style="margin-top: 10px;">
+                        <li>Use uma segunda conta</li>
+                        <li>Envie um convite da primeira conta para a segunda</li>
+                        <li>Aceite o convite na segunda conta</li>
+                        <li>Na segunda conta, selecione o grupo</li>
+                        <li>Verifique que aparece "👤 Você é MEMBRO"</li>
+                        <li>O botão "Adicionar Membro" deve estar <strong>escondido</strong></li>
+                        <li>Se tentar adicionar via API, deve receber erro 403</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="dashboard-card" style="background: #fff3cd; border: 2px solid #ffc107;">
+            <h3>⚠️ Comportamento Esperado</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: var(--bg-secondary);">
+                        <th style="padding: 10px; text-align: left; border: 1px solid var(--border-color);">Role</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid var(--border-color);">Pode Ver Grupo?</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid var(--border-color);">Botão Adicionar Visível?</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid var(--border-color);">Pode Adicionar?</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid var(--border-color);">Pode Remover?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);"><strong>👑 Admin</strong></td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);">✅ Sim</td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);">✅ Sim</td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);">✅ Sim</td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);">✅ Sim (exceto outros admins)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);"><strong>👤 Membro</strong></td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);">✅ Sim</td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);">❌ Não</td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);">❌ Não (erro 403)</td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);">❌ Não (erro 403)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);"><strong>🚫 Não-Membro</strong></td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);">❌ Não</td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);">❌ Não</td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);">❌ Não</td>
+                        <td style="padding: 10px; border: 1px solid var(--border-color);">❌ Não</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>✅ Correções Implementadas</h3>
+            <ul style="line-height: 1.8;">
+                <li>✅ <strong>API:</strong> Verificação rigorosa de role em <code>send_invite</code> e <code>add_member</code></li>
+                <li>✅ <strong>JavaScript:</strong> Nova função <code>isGroupAdmin()</code> para verificar permissões</li>
+                <li>✅ <strong>Interface:</strong> Botão "Adicionar Membro" apenas visível para administradores</li>
+                <li>✅ <strong>Interface:</strong> Botão "Remover" apenas visível para administradores</li>
+                <li>✅ <strong>Feedback:</strong> Mensagem clara quando utilizador não é admin</li>
+                <li>✅ <strong>Ícones:</strong> 👑 para Admin e 👤 para Membro</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 ChefGuedes. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="js/auth-api.js"></script>
+    <script src="js/main-api.js"></script>
+    <script>
+        let selectedGroupId = null;
+
+        // Verificar status de login
+        async function checkLoginStatus() {
+            const statusDiv = document.getElementById('loginStatus');
+            const user = await getCurrentUser();
+            
+            if (user) {
+                statusDiv.innerHTML = `
+                    <div style="color: #4caf50;">
+                        ✅ Logado como: <strong>${user.username}</strong> (ID: ${user.id})
+                        ${user.user_code ? `<br>Seu código: <strong>${user.user_code}</strong>` : ''}
+                    </div>
+                `;
+                await loadGroups();
+            } else {
+                statusDiv.innerHTML = `
+                    <div style="color: #f44336;">
+                        ❌ Não está logado. <a href="login.html">Fazer login</a>
+                    </div>
+                `;
+            }
+        }
+
+        // Carregar grupos do utilizador
+        async function loadGroups() {
+            const select = document.getElementById('groupSelect');
+            const groups = await getUserGroups();
+            
+            if (groups.length === 0) {
+                select.innerHTML = '<option value="">Você não pertence a nenhum grupo</option>';
+                return;
+            }
+            
+            select.innerHTML = '<option value="">Selecione um grupo...</option>' +
+                groups.map(g => `<option value="${g.id}">${g.name} (${g.user_role === 'admin' ? '👑 Admin' : '👤 Membro'})</option>`).join('');
+        }
+
+        // Selecionar grupo para testar
+        async function selectTestGroup() {
+            const select = document.getElementById('groupSelect');
+            selectedGroupId = select.value;
+            
+            if (!selectedGroupId) {
+                document.getElementById('groupInfo').style.display = 'none';
+                document.getElementById('membersList').innerHTML = 'Selecione um grupo acima';
+                document.getElementById('addMemberSection').style.display = 'none';
+                return;
+            }
+            
+            // Carregar informações do grupo
+            const groups = await getUserGroups();
+            const group = groups.find(g => g.id == selectedGroupId);
+            const isAdmin = await isGroupAdmin(selectedGroupId);
+            const members = await getGroupMembers(selectedGroupId);
+            
+            // Mostrar informações
+            const infoDiv = document.getElementById('groupInfo');
+            infoDiv.style.display = 'block';
+            infoDiv.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div>
+                        <strong>Nome do Grupo:</strong> ${group.name}<br>
+                        <strong>Total de Membros:</strong> ${group.member_count}<br>
+                        <strong>Criado por:</strong> ${group.created_by_name}
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="display: inline-block; padding: 10px 20px; border-radius: 8px; background: ${isAdmin ? '#4caf50' : '#2196f3'}; color: white; font-weight: bold; font-size: 1.1rem;">
+                            ${isAdmin ? '👑 Você é ADMINISTRADOR' : '👤 Você é MEMBRO'}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Mostrar membros
+            const membersDiv = document.getElementById('membersList');
+            membersDiv.innerHTML = members.map(m => `
+                <div style="padding: 10px; background: var(--bg-primary); border-radius: 4px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>${m.username}</strong>
+                        <span style="margin-left: 10px; padding: 2px 8px; border-radius: 4px; background: ${m.role === 'admin' ? '#4caf50' : '#2196f3'}; color: white; font-size: 0.85rem;">
+                            ${m.role === 'admin' ? '👑 Admin' : '👤 Membro'}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Mostrar/esconder seção de adicionar membro
+            const addSection = document.getElementById('addMemberSection');
+            if (isAdmin) {
+                addSection.style.display = 'block';
+            } else {
+                addSection.style.display = 'none';
+                membersDiv.innerHTML += `
+                    <div style="margin-top: 15px; padding: 15px; background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; text-align: center;">
+                        <strong>⚠️ Você não pode adicionar ou remover membros</strong><br>
+                        <small>Apenas administradores têm essa permissão</small>
+                    </div>
+                `;
+            }
+        }
+
+        // Testar adicionar membro
+        async function testAddMember() {
+            const resultDiv = document.getElementById('addMemberResult');
+            const userCode = document.getElementById('testUserCode').value.trim().toUpperCase();
+            
+            if (!selectedGroupId) {
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = '<p style="color: #f44336;">❌ Selecione um grupo primeiro</p>';
+                return;
+            }
+            
+            if (!userCode || userCode.length !== 6) {
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = '<p style="color: #f44336;">❌ O código deve ter exatamente 6 caracteres</p>';
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<p style="color: var(--text-secondary);">⏳ Enviando convite...</p>';
+            
+            const result = await addGroupMember(selectedGroupId, userCode);
+            
+            if (result.success) {
+                resultDiv.innerHTML = `
+                    <div style="color: #4caf50; padding: 15px; background: #e8f5e9; border-radius: 8px;">
+                        <strong>✅ SUCESSO!</strong><br>
+                        ${result.message || 'Convite enviado com sucesso!'}
+                    </div>
+                `;
+                // Recarregar membros
+                await selectTestGroup();
+            } else {
+                resultDiv.innerHTML = `
+                    <div style="color: #f44336; padding: 15px; background: #ffebee; border-radius: 8px;">
+                        <strong>❌ ERRO ${result.status || ''}</strong><br>
+                        ${result.message || 'Erro desconhecido'}
+                        ${result.status === 403 ? '<br><br><strong>👉 Isto é esperado se você não for administrador!</strong>' : ''}
+                    </div>
+                `;
+            }
+        }
+
+        // Inicializar
+        checkLoginStatus();
+    </script>
+</body>
+</html>

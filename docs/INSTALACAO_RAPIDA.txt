@@ -1,0 +1,133 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║         🚀 INSTALAÇÃO RÁPIDA - SISTEMA ADMIN                ║
+║              ChefGuedes - 3 Passos Simples                  ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+
+┌──────────────────────────────────────────────────────────────┐
+│  PASSO 1: Atualizar Base de Dados                           │
+└──────────────────────────────────────────────────────────────┘
+
+1. Abra phpMyAdmin → http://localhost/phpmyadmin
+2. Selecione a base de dados: siteguedes
+3. Clique na aba "SQL"
+4. Copie TODO o conteúdo do ficheiro:
+   
+   📄 INSTALAR_ADMIN.sql
+
+5. Cole na área de texto
+6. Clique em "Executar" ou "Go"
+
+✅ Deve ver: "Base de dados atualizada com sucesso!"
+
+
+┌──────────────────────────────────────────────────────────────┐
+│  PASSO 2: Criar Conta de Administrador                      │
+└──────────────────────────────────────────────────────────────┘
+
+1. Abra o navegador
+2. Vá para:
+   
+   🌐 http://localhost/siteguedes/setup-admin.html
+
+3. Preencha o formulário:
+   
+   👤 Nome de utilizador: admin
+   📧 Email: admin@chefguedes.pt  
+   🔑 Palavra-passe: [escolha uma senha forte]
+   🔑 Confirmar: [mesma senha]
+
+4. Clique em "Criar Conta Admin"
+
+✅ Deve ver: "Conta Admin Criada!"
+
+
+┌──────────────────────────────────────────────────────────────┐
+│  PASSO 3: Fazer Login como Admin                            │
+└──────────────────────────────────────────────────────────────┘
+
+1. Será redirecionado automaticamente, OU:
+2. Acesse manualmente:
+   
+   🌐 http://localhost/siteguedes/login.html
+
+3. Faça login com as credenciais do Passo 2
+
+✅ Será redirecionado para o Painel de Administração!
+
+
+═══════════════════════════════════════════════════════════════
+
+            ✨ INSTALAÇÃO CONCLUÍDA! ✨
+
+Agora você pode:
+  • Ver todos os utilizadores
+  • Banir/Suspender utilizadores problemáticos
+  • Dar avisos aos utilizadores
+  • Apagar receitas inapropriadas
+  • Ver estatísticas em tempo real
+
+═══════════════════════════════════════════════════════════════
+
+
+⚠️  IMPORTANTE - SEGURANÇA
+───────────────────────────────────────────────────────────────
+
+Após confirmar que tudo funciona, APAGUE estes ficheiros:
+
+   ❌ setup-admin.html
+   ❌ install_admin_new.php
+   ❌ ADMIN_INSTALACAO.txt
+   ❌ README_ADMIN.md
+   ❌ INSTALAR_ADMIN.sql
+   ❌ INSTALACAO_RAPIDA.txt (este ficheiro)
+
+No PowerShell:
+───────────────────────────────────────────────────────────────
+cd C:\wamp64\www\siteguedes
+Remove-Item setup-admin.html, install_admin_new.php, *.txt, README_ADMIN.md, INSTALAR_ADMIN.sql
+───────────────────────────────────────────────────────────────
+
+
+🆘 PROBLEMAS?
+───────────────────────────────────────────────────────────────
+
+❌ Erro ao executar SQL?
+   → Verifique se selecionou a BD "siteguedes"
+   → Certifique-se que o MySQL está a correr
+
+❌ Erro ao criar admin?
+   → Execute primeiro o SQL (Passo 1)
+   → Verifique se já existe um admin
+
+❌ Não consigo fazer login?
+   → Limpe os cookies do navegador
+   → Verifique se usou o email correto
+
+❌ Não vejo o painel admin?
+   → Confirme que a conta tem is_admin=1
+   → Veja o Console do browser (F12)
+
+
+📋 VERIFICAR SE ESTÁ TUDO OK
+───────────────────────────────────────────────────────────────
+
+Execute no phpMyAdmin (SQL):
+
+-- Ver se as colunas foram adicionadas
+DESCRIBE users;
+
+-- Ver se a conta admin foi criada
+SELECT id, username, email, is_admin FROM users WHERE is_admin = 1;
+
+-- Ver se as tabelas foram criadas
+SHOW TABLES LIKE 'admin%';
+
+
+═══════════════════════════════════════════════════════════════
+
+            Parabéns! Sistema Admin está pronto! 🎉
+
+═══════════════════════════════════════════════════════════════

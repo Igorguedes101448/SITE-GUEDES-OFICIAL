@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorar Receitas - ChefGuedes</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html">ChefGuedes</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="explorar-receitas.html" class="active">Explorar Receitas</a></li>
+                <li id="authMenuItems"></li>
+            </ul>
+            <div id="notificationDropdown" class="notification-dropdown" style="display: none;">
+                <button class="notification-btn" onclick="toggleNotifications()">
+                    <span id="notificationBadge" class="notification-badge" style="display: none;">0</span>
+                </button>
+                <div id="notificationMenu" class="notification-menu">
+                    <div class="notification-header">
+                        <h4>Notificações</h4>
+                        <button onclick="markAllRead()" style="background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 0.9rem;">Marcar todas como lidas</button>
+                    </div>
+                    <div id="notificationList" class="notification-list">
+                        <p style="text-align: center; color: var(--text-secondary); padding: 20px;">Sem notificações</p>
+                    </div>
+                </div>
+            </div>
+            <div id="profileDropdown" class="profile-dropdown" style="display: none;">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <img id="profileImage" src="" alt="Perfil" class="profile-image">
+                    <span id="profileName"></span>
+                </button>
+                <div id="profileMenu" class="profile-menu">
+                    <a href="perfil.html">Meu Perfil</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="receitas-privadas.html">Receitas Privadas</a>
+                    <a href="#" onclick="logout(); return false;">Sair</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Explorar Receitas</h1>
+            <p>Descubra receitas incríveis e crie as suas próprias</p>
+        </div>
+
+        <!-- Barra de filtros -->
+        <div class="filters-bar">
+            <div class="form-group search-box">
+                <input type="text" id="searchInput" placeholder="Pesquisar receitas..." onkeyup="filterRecipes()">
+            </div>
+            <div class="form-group filter-select">
+                <select id="categoryFilter" onchange="updateSubcategoryFilter(); filterRecipes();">
+                    <option value="">Todas as Categorias</option>
+                    <option value="Entrada">Entradas</option>
+                    <option value="Prato Principal">Pratos Principais</option>
+                    <option value="Sobremesa">Sobremesas</option>
+                    <option value="Bebida">Bebidas</option>
+                </select>
+            </div>
+            <div class="form-group filter-select">
+                <select id="subcategoryFilter" onchange="filterRecipes()">
+                    <option value="">Todas as Subcategorias</option>
+                </select>
+            </div>
+            <button id="btnNovaReceita" class="btn btn-primary" onclick="window.location.href='nova-receita.html';" style="display: none;">+ Nova Receita</button>
+        </div>
+
+        <!-- Grid de Receitas -->
+        <div id="recipesGrid" class="recipes-grid"></div>
+        
+        <!-- Paginação -->
+        <div id="paginationControls" class="pagination-controls" style="display: none;">
+            <button id="btnPrevPage" class="btn-pagination" onclick="goToPreviousPage()">
+                ← Anterior
+            </button>
+            <span id="pageInfo" class="page-info"></span>
+            <button id="btnNextPage" class="btn-pagination" onclick="goToNextPage()">
+                Próxima →
+            </button>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 ChefGuedes. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Modal Nova Receita -->
+    <div id="modalNovaReceita" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nova Receita</h3>
+                <button class="modal-close" onclick="closeModal('modalNovaReceita')">&times;</button>
+            </div>
+            <form id="formNovaReceita" onsubmit="submitRecipe(event)">
+                <div class="form-group">
+                    <label for="recipeTitle">Título:</label>
+                    <input type="text" id="recipeTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="recipeCategory">Categoria:</label>
+                    <select id="recipeCategory" required>
+                        <option value="">Selecione...</option>
+                        <option value="Entrada">Entrada</option>
+                        <option value="Prato Principal">Prato Principal</option>
+                        <option value="Sobremesa">Sobremesa</option>
+                        <option value="Bebida">Bebida</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="recipeDescription">Descrição:</label>
+                    <textarea id="recipeDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="recipeIngredients">Ingredientes (um por linha):</label>
+                    <textarea id="recipeIngredients" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="recipeInstructions">Modo de Preparação:</label>
+                    <textarea id="recipeInstructions" required rows="8"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="recipeImage">Imagem (opcional):</label>
+                    <input type="file" id="recipeImage" accept="image/*">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modalNovaReceita')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Receita</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detalhes Receita -->
+    <div id="modalDetalhesReceita" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="detailsTitle"></h3>
+                <button class="modal-close" onclick="closeModal('modalDetalhesReceita')">&times;</button>
+            </div>
+            <div id="recipeDetails"></div>
+        </div>
+    </div>
+
+    <script src="../js/auth-api.js"></script>
+    <script src="../js/main-api.js"></script>
+    <script src="../js/receitas-portuguesas.js"></script>
+    <script>
+        let currentRecipeId = null;
+        let allRecipes = [];
+        let currentPage = 1;
+        const recipesPerPage = 9; // 3x3 receitas por página
+
+        async function filterRecipes() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            
+            // Buscar receitas da base de dados
+            allRecipes = await searchRecipes(searchTerm, category);
+            
+            // Resetar para a primeira página quando filtrar
+            currentPage = 1;
+            
+            // Renderizar primeira página
+            renderRecipesPage();
+        }
+
+        function renderRecipesPage() {
+            const grid = document.getElementById('recipesGrid');
+            const paginationControls = document.getElementById('paginationControls');
+            const btnPrevPage = document.getElementById('btnPrevPage');
+            const btnNextPage = document.getElementById('btnNextPage');
+            const pageInfo = document.getElementById('pageInfo');
+            
+            // Verificar se há receitas
+            if (allRecipes.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">Nenhuma receita encontrada.</p>';
+                paginationControls.style.display = 'none';
+                return;
+            }
+            
+            // Calcular total de páginas
+            const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
+            
+            // Calcular índices para a página atual
+            const startIndex = (currentPage - 1) * recipesPerPage;
+            const endIndex = startIndex + recipesPerPage;
+            const recipesToShow = allRecipes.slice(startIndex, endIndex);
+            
+            // Renderizar receitas da página atual
+            grid.innerHTML = recipesToShow.map(recipe => {
+                return `
+                    <div class="recipe-card" onclick="window.location.href='receita-detalhes.html?id=${recipe.id}'">
+                        <div class="recipe-image">
+                            ${recipe.image ? `<img src="${recipe.image}" alt="${recipe.title}" onerror="this.parentElement.innerHTML='Imagem em breve'">` : 'Imagem em breve'}
+                        </div>
+                        <div class="recipe-content">
+                            <h3 class="recipe-title">${recipe.title}</h3>
+                            <span class="recipe-category">${recipe.category}</span>
+                            <p class="recipe-description">${recipe.description}</p>
+                            <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 10px;">Por ${recipe.author_name || 'ChefGuedes'}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Atualizar controlos de paginação
+            if (totalPages > 1) {
+                paginationControls.style.display = 'flex';
+                pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+                
+                // Desabilitar botões conforme necessário
+                btnPrevPage.disabled = currentPage === 1;
+                btnNextPage.disabled = currentPage === totalPages;
+            } else {
+                paginationControls.style.display = 'none';
+            }
+        }
+
+        function goToNextPage() {
+            const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderRecipesPage();
+                // Scroll para o topo da página
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function goToPreviousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderRecipesPage();
+                // Scroll para o topo da página
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        async function submitRecipe(e) {
+            e.preventDefault();
+            
+            if (!isUserLoggedIn()) {
+                showError('Faça login para criar receitas.');
+                return;
+            }
+            
+            const imageInput = document.getElementById('recipeImage');
+            const recipe = {
+                title: document.getElementById('recipeTitle').value,
+                category: document.getElementById('recipeCategory').value,
+                description: document.getElementById('recipeDescription').value,
+                ingredients: document.getElementById('recipeIngredients').value,
+                instructions: document.getElementById('recipeInstructions').value,
+                image: ''
+            };
+            
+            const processRecipe = async (imageData) => {
+                recipe.image = imageData || '';
+                const result = await saveRecipe(recipe);
+                
+                if (result.success) {
+                    await addActivity('recipe_create', `Criou a receita: ${recipe.title}`);
+                    closeModal('modalNovaReceita');
+                    e.target.reset();
+                    await filterRecipes();
+                    showSuccess('Receita criada com sucesso!');
+                } else {
+                    showError(result.message || 'Erro ao criar receita.');
+                }
+            };
+            
+            if (imageInput.files.length > 0) {
+                imageToBase64(imageInput.files[0], processRecipe);
+            } else {
+                processRecipe('');
+            }
+        }
+
+        async function showRecipeDetails(recipeId) {
+            const recipe = await getRecipeById(recipeId);
+            if (!recipe) return;
+            
+            currentRecipeId = recipeId;
+            document.getElementById('detailsTitle').textContent = recipe.title;
+            
+            const canDelete = isUserLoggedIn() && getCurrentUser().username === recipe.author;
+            
+            document.getElementById('recipeDetails').innerHTML = `
+                ${recipe.image ? `<img src="${recipe.image}" style="width: 100%; border-radius: var(--border-radius); margin-bottom: 20px;">` : ''}
+                <p><strong>Categoria:</strong> <span class="badge badge-primary">${recipe.category}</span></p>
+                <p><strong>Por:</strong> ${recipe.author}</p>
+                <p style="margin-top: 20px;">${recipe.description}</p>
+                
+                <h4 style="color: var(--primary-color); margin-top: 30px;">Ingredientes:</h4>
+                <p style="white-space: pre-line; background: var(--bg-secondary); padding: 15px; border-radius: var(--border-radius-sm);">${recipe.ingredients}</p>
+                
+                <h4 style="color: var(--primary-color); margin-top: 30px;">Modo de Preparação:</h4>
+                <p style="white-space: pre-line; background: var(--bg-secondary); padding: 15px; border-radius: var(--border-radius-sm); line-height: 1.8;">${recipe.instructions}</p>
+                
+                ${canDelete ? `<button class="btn btn-danger" style="margin-top: 30px;" onclick="deleteRecipeConfirm()">Eliminar Receita</button>` : ''}
+            `;
+            
+            openModal('modalDetalhesReceita');
+        }
+
+        async function deleteRecipeConfirm() {
+            if (confirm('Tem certeza que deseja eliminar esta receita?')) {
+                const result = await deleteRecipe(currentRecipeId);
+                
+                if (result.success) {
+                    await addActivity('recipe_delete', 'Eliminou uma receita');
+                    closeModal('modalDetalhesReceita');
+                    await filterRecipes();
+                    showSuccess('Receita eliminada com sucesso.');
+                } else {
+                    showError(result.message || 'Erro ao eliminar receita.');
+                }
+            }
+        }
+
+        // Função para abrir modal de nova receita (com verificação de login)
+        function openModalNovaReceita() {
+            if (!isUserLoggedIn()) {
+                showError('Faça login para criar receitas.');
+                setTimeout(() => {
+                    window.location.href = '../login.html';
+                }, 2000);
+                return;
+            }
+            openModal('modalNovaReceita');
+        }
+
+        // Controlar visibilidade do botão Nova Receita
+        function updateCreateRecipeButton() {
+            const btnNovaReceita = document.getElementById('btnNovaReceita');
+            if (btnNovaReceita) {
+                if (isUserLoggedIn()) {
+                    btnNovaReceita.style.display = 'block';
+                } else {
+                    btnNovaReceita.style.display = 'none';
+                }
+            }
+        }
+
+        // Subcategorias por categoria
+        const subcategories = {
+            'Entrada': ['Petiscos', 'Salgados', 'Queijos', 'Enchidos', 'Marisco', 'Vegetarianas'],
+            'Prato Principal': ['Carne', 'Peixe', 'Vegetarianos'],
+            'Sobremesa': ['Quentes', 'Frias'],
+            'Bebida': ['Quentes', 'Frias']
+        };
+
+        // Atualizar filtro de subcategorias
+        function updateSubcategoryFilter() {
+            const category = document.getElementById('categoryFilter').value;
+            const subcategoryFilter = document.getElementById('subcategoryFilter');
+            
+            subcategoryFilter.innerHTML = '<option value="">Todas as Subcategorias</option>';
+            
+            if (category && subcategories[category]) {
+                subcategories[category].forEach(sub => {
+                    subcategoryFilter.innerHTML += `<option value="${sub}">${sub}</option>`;
+                });
+                subcategoryFilter.disabled = false;
+            } else {
+                subcategoryFilter.disabled = true;
+            }
+        }
+
+        // Carregar receitas inicialmente
+        filterRecipes();
+        
+        // Atualizar visibilidade do botão ao carregar
+        updateCreateRecipeButton();
+        updateSubcategoryFilter();
+    </script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ChefGuedes</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html">ChefGuedes</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="explorar-receitas.html">Explorar Receitas</a></li>
+                <li id="authMenuItems"></li>
+            </ul>
+            <div id="notificationDropdown" class="notification-dropdown" style="display: none;">
+                <button class="notification-btn" onclick="toggleNotifications()">
+                    <span id="notificationBadge" class="notification-badge" style="display: none;">0</span>
+                </button>
+                <div id="notificationMenu" class="notification-menu">
+                    <div class="notification-header">
+                        <h4>Notificações</h4>
+                        <button onclick="markAllRead()" style="background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 0.9rem;">Marcar todas como lidas</button>
+                    </div>
+                    <div id="notificationList" class="notification-list">
+                        <p style="text-align: center; color: var(--text-secondary); padding: 20px;">Sem notificações</p>
+                    </div>
+                </div>
+            </div>
+            <div id="profileDropdown" class="profile-dropdown" style="display: none;">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <img id="profileImage" src="" alt="Perfil" class="profile-image">
+                    <span id="profileName"></span>
+                </button>
+                <div id="profileMenu" class="profile-menu">
+                    <a href="perfil.html">Meu Perfil</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="receitas-privadas.html">Receitas Privadas</a>
+                    <a href="#" onclick="logout(); return false;">Sair</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Dashboard</h1>
+            <p>Visão geral das suas atividades</p>
+        </div>
+
+        <!-- Estatísticas Rápidas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="statsRecipes">0</div>
+                <div class="stat-label">Minhas Receitas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="statsGroups">0</div>
+                <div class="stat-label">Meus Grupos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="statsFavorites">0</div>
+                <div class="stat-label">Favoritos</div>
+            </div>
+            <div class="stat-card" style="cursor: pointer;" onclick="window.location.href='receitas-privadas.html'">
+                <div class="stat-number" id="statsDrafts">0</div>
+                <div class="stat-label">Receitas Privadas</div>
+            </div>
+        </div>
+
+        <!-- Acesso Rápido -->
+        <div class="dashboard-card">
+            <h3>Acesso Rápido</h3>
+            <div class="flex gap-2" style="flex-wrap: wrap; margin-top: 20px;">
+                <a href="nova-receita.html" class="btn btn-primary">+ Nova Receita</a>
+                <a href="receitas-privadas.html" class="btn btn-primary">Ver Receitas Privadas</a>
+                <a href="grupos.html" class="btn btn-primary">+ Novo Grupo</a>
+                <a href="perfil.html" class="btn btn-outline">Editar Perfil</a>
+            </div>
+        </div>
+
+        <!-- Convites Pendentes -->
+        <div id="invitesSection" class="dashboard-card" style="display: none;">
+            <h3>Convites de Grupo Pendentes</h3>
+            <div id="groupInvites" style="margin-top: 20px;">
+            </div>
+        </div>
+
+        <!-- Receitas Recentes (Públicas) -->
+        <div class="dashboard-card">
+            <h3>Minhas Receitas Públicas</h3>
+            <div id="recentRecipes" style="margin-top: 20px;">
+                <p style="color: var(--text-secondary);">Nenhuma receita pública criada ainda.</p>
+            </div>
+        </div>
+
+        <!-- Receitas Privadas/Rascunhos -->
+        <div id="draftsSection" class="dashboard-card" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Minhas Receitas Privadas</h3>
+                <a href="receitas-privadas.html" style="color: var(--primary-color); text-decoration: none; font-size: 0.9rem;">Ver todas →</a>
+            </div>
+            <div id="recentDrafts" style="margin-top: 20px;">
+                <p style="color: var(--text-secondary);">Nenhuma receita privada.</p>
+            </div>
+        </div>
+
+        <!-- Meus Grupos -->
+        <div class="dashboard-card">
+            <h3>Meus Grupos</h3>
+            <div id="myGroups" style="margin-top: 20px;">
+                <p style="color: var(--text-secondary);">Nenhum grupo criado ainda.</p>
+            </div>
+        </div>
+
+        <!-- Próximas Refeições -->
+        <div class="dashboard-card">
+            <h3>Próximas Refeições Agendadas</h3>
+            <div id="upcomingMeals" style="margin-top: 20px;">
+                <p style="color: var(--text-secondary);">Nenhuma refeição agendada.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 ChefGuedes. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="../js/auth-api.js"></script>
+    <script src="../js/main-api.js"></script>
+    <script src="../js/clear-recipes.js"></script>
+    <script>
+        // Proteger rota
+        if (!requireAuth()) {
+            // Será redirecionado para login
+        }
+
+        // Carregar estatísticas
+        async function loadStats() {
+            const stats = await getUserStats();
+            const currentUser = await getCurrentUser();
+            
+            // Buscar rascunhos
+            const drafts = await loadDraftsData();
+            
+            document.getElementById('statsRecipes').textContent = stats.recipes;
+            document.getElementById('statsGroups').textContent = stats.groups;
+            document.getElementById('statsFavorites').textContent = stats.favorites || 0;
+            document.getElementById('statsDrafts').textContent = drafts.length;
+        }
+        
+        // Carregar dados de rascunhos
+        async function loadDraftsData() {
+            try {
+                const response = await fetch(`${API_BASE}/recipes.php?drafts=true`, {
+                    headers: {
+                        'Authorization': `Bearer ${getSessionToken()}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success && result.data && result.data.recipes) {
+                    return result.data.recipes;
+                }
+                return [];
+            } catch (error) {
+                console.error('Erro ao carregar rascunhos:', error);
+                return [];
+            }
+        }
+        
+        // Carregar rascunhos recentes (receitas privadas)
+        async function loadRecentDrafts() {
+            const drafts = await loadDraftsData();
+            const container = document.getElementById('recentDrafts');
+            const section = document.getElementById('draftsSection');
+            
+            if (drafts.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            section.style.display = 'block';
+            
+            const recentDrafts = drafts.slice(0, 5);
+            
+            container.innerHTML = recentDrafts.map(draft => `
+                <div class="activity-item" style="display: flex; align-items: center; justify-content: space-between; padding: 15px; margin-bottom: 10px; background: var(--bg-secondary); border-radius: 8px; border-left: 4px solid #f39c12;">
+                    ${draft.image ? `<img src="${draft.image}" alt="${draft.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 15px;">` : ''}
+                    <div style="flex: 1;">
+                        <strong>${draft.title || 'Sem título'}</strong>
+                        <p style="color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem;">
+                            ${draft.category || 'Sem categoria'} • ${formatDate(draft.updated_at)}
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <a href="receita-detalhes.html?id=${draft.id}" class="btn btn-sm btn-outline" style="text-decoration: none;">Ver</a>
+                        <a href="nova-receita.html?id=${draft.id}" class="btn btn-sm btn-primary" style="text-decoration: none;">Editar</a>
+                        <button onclick="confirmDeleteRecipe(${draft.id}, '${(draft.title || 'Sem título').replace(/'/g, "\\'")}', 'draft')" 
+                                class="btn btn-sm" 
+                                style="background: #dc3545; color: white; padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;"
+                                title="Apagar rascunho">
+                            Apagar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Carregar receitas recentes
+        async function loadRecentRecipes() {
+            const container = document.getElementById('recentRecipes');
+            const currentUser = await getCurrentUser();
+            const recipes = await getAllRecipes();
+            
+            const userRecipes = recipes
+                .filter(r => r.author_id == currentUser?.id)
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                .slice(0, 5);
+            
+            if (userRecipes.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary);">Nenhuma receita criada ainda. <a href="nova-receita.html">Criar primeira receita</a></p>';
+                return;
+            }
+            
+            container.innerHTML = userRecipes.map(recipe => `
+                <div class="activity-item" style="display: flex; align-items: center; padding: 15px; margin-bottom: 10px; background: var(--bg-secondary); border-radius: 8px;">
+                    ${recipe.image ? `<img src="${recipe.image}" alt="${recipe.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 15px;">` : ''}
+                    <div style="flex: 1;">
+                        <strong><a href="receita-detalhes.html?id=${recipe.id}">${recipe.title}</a></strong>
+                        <p style="color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem;">
+                            ${recipe.category || 'Sem categoria'} • Criada em ${formatDate(recipe.created_at)}
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="confirmDeleteRecipe(${recipe.id}, '${recipe.title.replace(/'/g, "\\'")}', 'public')" 
+                                class="btn btn-sm" 
+                                style="background: #dc3545; color: white; padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;"
+                                title="Apagar receita">
+                            Apagar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Carregar grupos
+        async function loadMyGroups() {
+            const userGroups = await getUserGroups();
+            
+            const container = document.getElementById('myGroups');
+            
+            if (userGroups.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary);">Nenhum grupo criado ainda. <a href="grupos.html">Criar primeiro grupo</a></p>';
+                return;
+            }
+            
+            container.innerHTML = userGroups.map(group => `
+                <div class="activity-item" style="padding: 15px; margin-bottom: 10px; background: var(--bg-secondary); border-radius: 8px;">
+                    <strong><a href="grupos.html?id=${group.id}">${group.name}</a></strong>
+                    <p style="color: var(--text-secondary); margin-top: 5px;">
+                        ${group.member_count || 0} membros • ${group.user_role === 'admin' ? 'Administrador' : 'Membro'} • Criado em ${formatDate(group.created_at)}
+                    </p>
+                </div>
+            `).join('');
+        }
+
+        // Carregar convites pendentes
+        async function loadGroupInvites() {
+            const invites = await getGroupInvites();
+            const container = document.getElementById('groupInvites');
+            const section = document.getElementById('invitesSection');
+            
+            if (invites.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            section.style.display = 'block';
+            
+            container.innerHTML = invites.map(invite => `
+                <div class="invite-item" style="padding: 15px; margin-bottom: 15px; background: var(--bg-secondary); border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="flex: 1;">
+                            <strong style="font-size: 1.1rem;">${invite.group_name}</strong>
+                            <p style="color: var(--text-secondary); margin: 5px 0;">
+                                ${invite.group_description || 'Sem descrição'}
+                            </p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 8px;">
+                                <strong>${invite.inviter_name}</strong> convidou você • ${formatDateTime(invite.created_at)}
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-left: 15px;">
+                            <button onclick="handleAcceptInvite(${invite.id})" class="btn btn-sm btn-success" title="Aceitar">✓</button>
+                            <button onclick="handleRejectInvite(${invite.id})" class="btn btn-sm btn-danger" title="Recusar">✗</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Aceitar convite
+        async function handleAcceptInvite(inviteId) {
+            const result = await acceptGroupInvite(inviteId);
+            if (result.success) {
+                showSuccess('Convite aceite! Você agora é membro do grupo.');
+                await loadGroupInvites();
+                await loadMyGroups();
+                await loadStats();
+            } else {
+                showError(result.message || 'Erro ao aceitar convite.');
+            }
+        }
+
+        // Recusar convite
+        async function handleRejectInvite(inviteId) {
+            if (!confirm('Tem certeza que deseja recusar este convite?')) {
+                return;
+            }
+            
+            const result = await rejectGroupInvite(inviteId);
+            if (result.success) {
+                showSuccess('Convite recusado.');
+                await loadGroupInvites();
+            } else {
+                showError(result.message || 'Erro ao recusar convite.');
+            }
+        }
+
+        // Carregar próximas refeições
+        async function loadUpcomingMeals() {
+            const today = new Date().toISOString().split('T')[0];
+            const nextWeek = new Date();
+            nextWeek.setDate(nextWeek.getDate() + 7);
+            const endDate = nextWeek.toISOString().split('T')[0];
+            
+            const schedules = await getSchedules(today, endDate);
+            
+            const container = document.getElementById('upcomingMeals');
+            
+            if (schedules.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary);">Nenhuma refei\u00e7\u00e3o agendada para os pr\u00f3ximos 7 dias. <a href="grupos.html?tab=agendamento" style="color: var(--primary-color);">Agendar refei\u00e7\u00e3o</a></p>';
+                return;
+            }
+            
+            container.innerHTML = schedules
+                .sort((a, b) => new Date(a.scheduled_date) - new Date(b.scheduled_date))
+                .map(schedule => `
+                    <div class="meal-item" style="display: flex; align-items: center; padding: 15px; margin-bottom: 10px; background: var(--bg-secondary); border-radius: 8px;">
+                        ${schedule.recipe_image ? `<img src="${schedule.recipe_image}" alt="${schedule.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 15px;">` : ''}
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: var(--primary-color);">${schedule.meal_type || 'Refeição'}</div>
+                            <div style="font-weight: 500; margin-top: 3px;">${schedule.title}</div>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;">
+                                ${formatDate(schedule.scheduled_date)}${schedule.scheduled_time ? ' às ' + schedule.scheduled_time.substring(0, 5) : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        // Função auxiliar para abrir página de agendamento
+        function openScheduleModal() {
+            window.location.href = 'grupos.html?tab=agendamento';
+        }
+
+        // Função para confirmar e apagar receita
+        async function confirmDeleteRecipe(recipeId, recipeTitle, type = 'public') {
+            if (!confirm(`Tem certeza que deseja apagar a receita "${recipeTitle}"?\n\nEsta ação não pode ser desfeita.`)) {
+                return;
+            }
+
+            try {
+                const result = await deleteRecipe(recipeId);
+                
+                if (result.success) {
+                    alert('Receita apagada com sucesso!');
+                    // Recarregar as receitas
+                    if (type === 'public') {
+                        await loadRecentRecipes();
+                    } else {
+                        await loadRecentDrafts();
+                    }
+                    // Atualizar estatísticas
+                    await loadStats();
+                } else {
+                    alert('Erro ao apagar receita: ' + (result.message || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro ao apagar receita:', error);
+                alert('Erro ao apagar receita. Por favor, tente novamente.');
+            }
+        }
+
+        // Inicializar dashboard
+        (async function() {
+            await loadStats();
+            await loadRecentRecipes();
+            await loadRecentDrafts();
+            await loadMyGroups();
+            await loadGroupInvites();
+            await loadUpcomingMeals();
+        })();
+    </script>
+</body>
+</html>

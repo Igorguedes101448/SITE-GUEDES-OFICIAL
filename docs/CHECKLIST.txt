@@ -1,0 +1,222 @@
+# ✅ CHECKLIST DE INSTALAÇÃO - ChefGuedes
+
+## 📋 Antes de Começar
+
+- [ ] WAMP Server instalado
+- [ ] WAMP está a correr (ícone verde)
+- [ ] Apache ativo
+- [ ] MySQL ativo
+- [ ] Navegador moderno (Chrome, Firefox, Edge)
+
+---
+
+## 🚀 INSTALAÇÃO (2 Passos!)
+
+### Passo 1: Criar Base de Dados
+- [ ] Abrir navegador
+- [ ] Aceder a: `http://localhost/siteguedes/api/init_db.php`
+- [ ] Ver mensagem de sucesso: "✅ Base de dados criada com sucesso!"
+
+### Passo 2: Usar o Site
+- [ ] Aceder a: `http://localhost/siteguedes/`
+- [ ] Site carrega corretamente
+
+---
+
+## 🧪 TESTES (Opcional mas Recomendado)
+
+### Testar Sistema
+- [ ] Abrir: `http://localhost/siteguedes/test-db.html`
+- [ ] Clicar em "Testar PHP" → Verde ✅
+- [ ] Clicar em "Inicializar BD" → Verde ✅
+- [ ] Clicar em "Testar API" → Verde ✅
+- [ ] Clicar em "Executar Migrações" → Verde ✅
+
+### Testar Registo e Login
+- [ ] Abrir: `http://localhost/siteguedes/registo.html`
+- [ ] Criar nova conta
+- [ ] Verificar se registo foi bem-sucedido
+- [ ] Fazer login com a conta criada
+- [ ] Login bem-sucedido
+
+### Testar Foto de Perfil (IMPORTANTE!)
+- [ ] Fazer login
+- [ ] Ir para Perfil
+- [ ] Fazer upload de uma foto
+- [ ] Foto aparece corretamente
+- [ ] Atualizar a página (F5)
+- [ ] **Foto continua visível** ✅
+- [ ] Ir para Dashboard
+- [ ] **Foto aparece no menu** ✅
+- [ ] Fazer logout
+- [ ] Fazer login novamente
+- [ ] **Foto ainda está lá** ✅
+
+---
+
+## 📊 VERIFICAR BASE DE DADOS
+
+### Via phpMyAdmin
+- [ ] Abrir: `http://localhost/phpmyadmin`
+- [ ] Verificar se existe base de dados `chefguedes`
+- [ ] Verificar se existem 10 tabelas:
+  - [ ] users
+  - [ ] user_preferences
+  - [ ] sessions
+  - [ ] recipes
+  - [ ] favorites
+  - [ ] groups
+  - [ ] group_members
+  - [ ] schedules
+  - [ ] activities
+  - [ ] migrations
+
+---
+
+## 🔍 VERIFICAR FICHEIROS
+
+### API PHP (pasta api/)
+- [ ] db.php
+- [ ] users.php
+- [ ] recipes.php
+- [ ] groups.php
+- [ ] migrate.php
+- [ ] init_db.php
+
+### JavaScript (pasta js/)
+- [ ] auth-api.js
+- [ ] main-api.js
+
+### Base de Dados (pasta database/)
+- [ ] schema.sql
+- [ ] demo_data.sql
+
+### Documentação
+- [ ] INICIO_RAPIDO_BD.md
+- [ ] INSTALACAO_BD.md
+- [ ] README_BD.md
+- [ ] RESUMO_IMPLEMENTACAO.md
+- [ ] INSTALACAO.html
+- [ ] test-db.html
+
+---
+
+## 🎯 TESTAR FUNCIONALIDADES
+
+### Autenticação
+- [ ] Registo de novo utilizador funciona
+- [ ] Login funciona
+- [ ] Logout funciona
+- [ ] Sessão mantém-se após atualizar página
+- [ ] "Lembrar-me" funciona (30 dias)
+
+### Perfil
+- [ ] Pode editar nome
+- [ ] Pode editar email
+- [ ] Pode editar telefone
+- [ ] Pode editar biografia
+- [ ] Pode editar localização
+- [ ] **Pode fazer upload de foto** ✅
+- [ ] **Foto não desaparece** ✅
+- [ ] Pode adicionar preferências culinárias
+- [ ] Pode alterar password
+
+### Receitas
+- [ ] Pode criar receita
+- [ ] Pode editar receita própria
+- [ ] Pode apagar receita própria
+- [ ] Pode pesquisar receitas
+- [ ] Pode filtrar por categoria
+- [ ] Pode adicionar aos favoritos
+- [ ] Pode remover dos favoritos
+
+### Grupos
+- [ ] Pode criar grupo
+- [ ] Pode ver lista de grupos
+- [ ] Pode apagar grupo próprio
+
+---
+
+## 🐛 RESOLUÇÃO DE PROBLEMAS
+
+### Se algo não funcionar:
+
+#### Erro de Conexão
+- [ ] Verificar se WAMP está verde
+- [ ] Verificar se MySQL está ativo
+- [ ] Executar novamente: `api/init_db.php`
+
+#### Foto não Aparece
+- [ ] Limpar cache do navegador (Ctrl+Shift+Del)
+- [ ] Fazer logout e login
+- [ ] Fazer upload da foto novamente
+- [ ] Verificar se está a usar `auth-api.js` (não `auth.js`)
+
+#### Tabelas não Existem
+- [ ] Ir ao phpMyAdmin
+- [ ] Apagar base de dados `chefguedes`
+- [ ] Executar novamente: `api/init_db.php`
+
+#### Scripts Antigos a Carregar
+- [ ] Verificar se páginas HTML usam `auth-api.js` e `main-api.js`
+- [ ] Não devem usar `auth.js` e `main.js`
+- [ ] Limpar cache do navegador
+
+---
+
+## 📝 DADOS DE DEMONSTRAÇÃO (Opcional)
+
+Se quiser ter dados de exemplo:
+
+- [ ] Abrir phpMyAdmin
+- [ ] Selecionar base de dados `chefguedes`
+- [ ] Ir ao separador "SQL"
+- [ ] Copiar conteúdo de `database/demo_data.sql`
+- [ ] Colar e executar
+- [ ] Verificar se utilizador demo foi criado
+- [ ] Testar login com:
+  - Email: `demo@chefguedes.pt`
+  - Password: `demo123`
+
+---
+
+## 🎉 INSTALAÇÃO COMPLETA!
+
+Se todos os checkboxes acima estão marcados, a instalação está **100% completa**!
+
+### O que funciona agora:
+- ✅ Base de dados MySQL permanente
+- ✅ Sistema de autenticação seguro
+- ✅ Foto de perfil que não desaparece
+- ✅ Gestão de receitas
+- ✅ Gestão de grupos
+- ✅ Sistema de favoritos
+- ✅ Migrações automáticas
+- ✅ Tudo guardado na base de dados
+
+---
+
+## 🚀 PRÓXIMOS PASSOS
+
+Agora pode:
+1. [ ] Criar sua conta
+2. [ ] Adicionar foto de perfil
+3. [ ] Criar receitas
+4. [ ] Criar grupos
+5. [ ] Explorar o site
+
+**Divirta-se a usar o ChefGuedes! 🍳👨‍🍳**
+
+---
+
+## 📞 LINKS ÚTEIS
+
+- Site: `http://localhost/siteguedes/`
+- Testes: `http://localhost/siteguedes/test-db.html`
+- Instalação Visual: `http://localhost/siteguedes/INSTALACAO.html`
+- Init DB: `http://localhost/siteguedes/api/init_db.php`
+- phpMyAdmin: `http://localhost/phpmyadmin`
+
+---
+
+**ChefGuedes 2025 - Sistema completo com base de dados MySQL** ✨

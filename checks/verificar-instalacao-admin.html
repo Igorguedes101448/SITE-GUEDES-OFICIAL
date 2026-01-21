@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador de Instalação Admin - ChefGuedes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .check-item {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ccc;
+        }
+        .check-item.success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .check-item.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .check-item.warning {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+        .check-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .check-result {
+            font-size: 14px;
+            color: #666;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Verificador de Instalação</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Este script verifica se o Sistema de Administração foi instalado corretamente.
+        </p>
+        
+        <div id="results">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 20px; color: #666;">Verificando instalação...</p>
+            </div>
+        </div>
+        
+        <button class="btn" onclick="verificar()" style="display: none;" id="btnVerificar">
+            🔄 Verificar Novamente
+        </button>
+    </div>
+    
+    <script>
+        async function verificar() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p style="margin-top: 20px; color: #666;">Verificando...</p></div>';
+            
+            const checks = [];
+            
+            // 1. Verificar se a API está acessível
+            try {
+                const response = await fetch('../api/db.php');
+                checks.push({
+                    name: '1. Conexão com a API',
+                    success: response.ok,
+                    message: response.ok ? 'API acessível' : 'Erro ao conectar à API'
+                });
+            } catch (error) {
+                checks.push({
+                    name: '1. Conexão com a API',
+                    success: false,
+                    message: 'Erro: ' + error.message
+                });
+            }
+            
+            // 2. Verificar se existe admin
+            try {
+                const response = await fetch('../api/admin.php?action=check_admin');
+                const data = await response.json();
+                
+                if (response.status === 403) {
+                    checks.push({
+                        name: '2. Conta Admin',
+                        success: true,
+                        message: 'Sistema de admin instalado (faça login como admin para testar)'
+                    });
+                } else if (data.success) {
+                    checks.push({
+                        name: '2. Conta Admin',
+                        success: true,
+                        message: 'Você está logado como admin!'
+                    });
+                } else {
+                    checks.push({
+                        name: '2. Conta Admin',
+                        success: false,
+                        message: 'Sistema de admin não instalado corretamente'
+                    });
+                }
+            } catch (error) {
+                checks.push({
+                    name: '2. Conta Admin',
+                    success: false,
+                    message: 'Erro ao verificar: ' + error.message
+                });
+            }
+            
+            // 3. Verificar estatísticas (indica que as tabelas existem)
+            try {
+                const response = await fetch('../api/admin.php?action=stats');
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    const hasNewFields = 'suspendedUsers' in data.data && 'todayActions' in data.data;
+                    checks.push({
+                        name: '3. Base de Dados Atualizada',
+                        success: hasNewFields,
+                        message: hasNewFields 
+                            ? 'Todas as tabelas e campos criados com sucesso' 
+                            : 'Campos básicos OK, mas alguns campos novos podem estar em falta'
+                    });
+                } else {
+                    checks.push({
+                        name: '3. Base de Dados Atualizada',
+                        success: false,
+                        message: 'Erro ao verificar estatísticas'
+                    });
+                }
+            } catch (error) {
+                checks.push({
+                    name: '3. Base de Dados Atualizada',
+                    success: false,
+                    message: 'Execute o script SQL de atualização'
+                });
+            }
+            
+            // 4. Verificar se arquivos de instalação existem (devem ser apagados)
+            try {
+                const testFiles = ['setup-admin.html', 'install_admin_new.php'];
+                let filesExist = 0;
+                
+                for (const file of testFiles) {
+                    try {
+                        const response = await fetch(file, { method: 'HEAD' });
+                        if (response.ok) filesExist++;
+                    } catch (e) {}
+                }
+                
+                checks.push({
+                    name: '4. Segurança (Ficheiros de Instalação)',
+                    success: filesExist === 0,
+                    message: filesExist === 0 
+                        ? '✅ Ficheiros de instalação foram apagados (seguro)' 
+                        : `⚠️ ${filesExist} ficheiro(s) de instalação ainda presente(s) - apague-os por segurança!`,
+                    warning: filesExist > 0
+                });
+            } catch (error) {
+                checks.push({
+                    name: '4. Segurança',
+                    success: true,
+                    message: 'Não foi possível verificar (presumindo seguro)'
+                });
+            }
+            
+            // Exibir resultados
+            let html = '';
+            let allSuccess = true;
+            
+            checks.forEach(check => {
+                const className = check.warning ? 'warning' : (check.success ? 'success' : 'error');
+                const icon = check.warning ? '⚠️' : (check.success ? '✅' : '❌');
+                
+                html += `
+                    <div class="check-item ${className}">
+                        <div class="check-name">${icon} ${check.name}</div>
+                        <div class="check-result">${check.message}</div>
+                    </div>
+                `;
+                
+                if (!check.success && !check.warning) allSuccess = false;
+            });
+            
+            // Resumo final
+            if (allSuccess) {
+                html += `
+                    <div class="check-item success">
+                        <div class="check-name">🎉 Sistema Pronto!</div>
+                        <div class="check-result">
+                            O Sistema de Administração foi instalado com sucesso e está pronto para uso!
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="check-item error">
+                        <div class="check-name">⚠️ Atenção</div>
+                        <div class="check-result">
+                            Alguns problemas foram encontrados. Siga as instruções acima para corrigir.
+                        </div>
+                    </div>
+                `;
+            }
+            
+            resultsDiv.innerHTML = html;
+            document.getElementById('btnVerificar').style.display = 'block';
+        }
+        
+        // Executar verificação ao carregar
+        window.addEventListener('load', verificar);
+    </script>
+</body>
+</html>

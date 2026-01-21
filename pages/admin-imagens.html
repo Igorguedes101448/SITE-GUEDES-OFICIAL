@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Adicionar Imagens às Receitas - ChefGuedes</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .admin-warning {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .admin-warning h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
+        }
+        
+        .admin-warning p {
+            margin: 0;
+            opacity: 0.95;
+        }
+        
+        .recipe-card-admin {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .recipe-image-preview {
+            width: 200px;
+            height: 150px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px dashed #ddd;
+            background: #f8f9fa;
+        }
+        
+        .recipe-image-preview.has-image {
+            border: 2px solid var(--primary-color);
+        }
+        
+        .recipe-info h3 {
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+        }
+        
+        .recipe-info p {
+            margin: 5px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .upload-controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-input-label {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .file-input-label:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .upload-status {
+            font-size: 0.85rem;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        .upload-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .upload-status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .no-recipes {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .no-recipes-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .admin-tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+        
+        .admin-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .admin-tab:hover {
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-section h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        
+        .btn-create {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html">🔐 ChefGuedes Admin</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="explorar-receitas.html">Ver Receitas</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+            <div id="profileDropdown" class="profile-dropdown" style="display: none;">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <img id="profileImage" src="" alt="Perfil" class="profile-image">
+                    <span id="profileName"></span>
+                </button>
+                <div id="profileMenu" class="profile-menu">
+                    <a href="perfil.html">Meu Perfil</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="#" onclick="logout(); return false;">Sair</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="max-width: 1200px; padding: 40px 20px;">
+        <div class="admin-warning">
+            <h2>⚠️ MODO ADMINISTRADOR - TEMPORÁRIO</h2>
+            <p>Crie receitas e adicione imagens. Funcionalidade temporária para setup inicial.</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">🔒 Esta página será removida quando solicitado.</p>
+        </div>
+
+        <div class="page-header">
+            <h1>🛠️ Administração de Receitas</h1>
+            <p>Crie novas receitas e adicione imagens</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="switchTab('create')">➕ Criar Receita</button>
+            <button class="admin-tab" onclick="switchTab('images')">📸 Adicionar Imagens</button>
+        </div>
+
+        <!-- Tab: Criar Receita -->
+        <div id="tab-create" class="tab-content active">
+            <div class="form-section">
+                <h3>➕ Nova Receita</h3>
+                <form id="formNovaReceitaAdmin" onsubmit="submitRecipeAdmin(event)">
+                    <div class="form-group">
+                        <label for="adminTitle">Título da Receita: *</label>
+                        <input type="text" id="adminTitle" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="adminCategory">Categoria: *</label>
+                            <select id="adminCategory" required onchange="updateSubcategoriesAdmin()">
+                                <option value="">Selecione...</option>
+                                <option value="Entrada">Entrada</option>
+                                <option value="Prato Principal">Prato Principal</option>
+                                <option value="Sobremesa">Sobremesa</option>
+                                <option value="Bebida">Bebida</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="adminSubcategory">Subcategoria:</label>
+                            <select id="adminSubcategory" disabled>
+                                <option value="">Selecione...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminDescription">Descrição: *</label>
+                        <textarea id="adminDescription" rows="3" required placeholder="Breve descrição da receita"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminIngredients">Ingredientes: *</label>
+                        <textarea id="adminIngredients" rows="8" required placeholder="Liste os ingredientes com quantidades&#10;Ex: 400g de bacalhau&#10;2 cebolas grandes&#10;3 dentes de alho"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminInstructions">Modo de Preparação: *</label>
+                        <textarea id="adminInstructions" rows="10" required placeholder="Descreva o modo de preparação passo a passo&#10;1. Primeiro passo...&#10;2. Segundo passo..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="adminPrepTime">Tempo de Preparação (min):</label>
+                            <input type="number" id="adminPrepTime" min="0" placeholder="Ex: 30">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="adminCookTime">Tempo de Cozedura (min):</label>
+                            <input type="number" id="adminCookTime" min="0" placeholder="Ex: 45">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="adminServings">Doses:</label>
+                            <input type="number" id="adminServings" min="1" placeholder="Ex: 4">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="adminDifficulty">Dificuldade:</label>
+                            <select id="adminDifficulty">
+                                <option value="Fácil">Fácil</option>
+                                <option value="Média" selected>Média</option>
+                                <option value="Difícil">Difícil</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminRecipeImage">Imagem da Receita:</label>
+                        <input type="file" id="adminRecipeImage" accept="image/*" onchange="handleAdminImagePreview(event)">
+                        <img id="adminImagePreview" src="" alt="Pré-visualização" style="max-width: 100%; max-height: 300px; margin-top: 10px; display: none; border-radius: 8px;">
+                    </div>
+
+                    <div class="form-actions" style="margin-top: 30px;">
+                        <button type="submit" class="btn-create">✅ Criar Receita</button>
+                        <button type="button" class="btn btn-outline" onclick="resetFormAdmin()">🔄 Limpar Formulário</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tab: Adicionar Imagens -->
+        <div id="tab-images" class="tab-content">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-label">Total de Receitas</div>
+                    <div class="stat-number" id="totalRecipes">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Com Imagens</div>
+                    <div class="stat-number" id="withImages">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Sem Imagens</div>
+                    <div class="stat-number" id="withoutImages">0</div>
+                </div>
+            </div>
+
+            <div id="recipesList"></div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 ChefGuedes. Modo Administrador.</p>
+    </footer>
+
+    <script src="../js/auth-api.js"></script>
+    <script src="../js/main-api.js"></script>
+    <script>
+        let recipes = [];
+
+        // Verificar autenticação
+        (async function() {
+            await requireAuth();
+            loadRecipes();
+        })();
+
+        async function loadRecipes() {
+            try {
+                const response = await fetch(`${API_BASE}/recipes.php`);
+                const result = await response.json();
+
+                if (result.success) {
+                    recipes = result.data.recipes;
+                    updateStats();
+                    displayRecipes();
+                } else {
+                    showError('Erro ao carregar receitas.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showError('Erro de conexão.');
+            }
+        }
+
+        function updateStats() {
+            const total = recipes.length;
+            const withImages = recipes.filter(r => r.image).length;
+            const withoutImages = total - withImages;
+
+            document.getElementById('totalRecipes').textContent = total;
+            document.getElementById('withImages').textContent = withImages;
+            document.getElementById('withoutImages').textContent = withoutImages;
+        }
+
+        function displayRecipes() {
+            const container = document.getElementById('recipesList');
+
+            if (recipes.length === 0) {
+                container.innerHTML = `
+                    <div class="no-recipes">
+                        <div class="no-recipes-icon">📭</div>
+                        <h3>Nenhuma receita encontrada</h3>
+                        <p>Execute primeiro o SQL de receitas iniciais.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = recipes.map(recipe => `
+                <div class="recipe-card-admin">
+                    <div>
+                        <img 
+                            src="${recipe.image || '../images/receitas/placeholder.jpg'}" 
+                            alt="${recipe.title}"
+                            class="recipe-image-preview ${recipe.image ? 'has-image' : ''}"
+                            id="preview-${recipe.id}"
+                            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%23999%22%3ESem Imagem%3C/text%3E%3C/svg%3E'"
+                        >
+                    </div>
+                    <div class="recipe-info">
+                        <h3>${recipe.title}</h3>
+                        <p><strong>Categoria:</strong> ${recipe.category} ${recipe.subcategory ? '→ ' + recipe.subcategory : ''}</p>
+                        <p><strong>Dificuldade:</strong> ${recipe.difficulty} | <strong>Doses:</strong> ${recipe.servings || 'N/A'}</p>
+                        <p><strong>Autor:</strong> ${recipe.author_name || 'Desconhecido'}</p>
+                        
+                        <div class="upload-controls">
+                            <div class="file-input-wrapper">
+                                <input 
+                                    type="file" 
+                                    id="file-${recipe.id}" 
+                                    accept="image/*"
+                                    onchange="handleImageUpload(${recipe.id}, this)"
+                                >
+                                <label for="file-${recipe.id}" class="file-input-label">
+                                    ${recipe.image ? '🔄 Trocar Imagem' : '📤 Carregar Imagem'}
+                                </label>
+                            </div>
+                            <span class="upload-status" id="status-${recipe.id}"></span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function handleImageUpload(recipeId, input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // Validar tipo de ficheiro
+            if (!file.type.match('image.*')) {
+                showError('Por favor selecione uma imagem válida.');
+                return;
+            }
+
+            // Validar tamanho (máx 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showError('A imagem é muito grande. Tamanho máximo: 5MB.');
+                return;
+            }
+
+            const statusEl = document.getElementById(`status-${recipeId}`);
+            statusEl.textContent = '⏳ A carregar...';
+            statusEl.className = 'upload-status';
+
+            // Converter para base64
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const imageData = e.target.result;
+                
+                // Atualizar preview
+                const preview = document.getElementById(`preview-${recipeId}`);
+                preview.src = imageData;
+                preview.classList.add('has-image');
+
+                // Enviar para API
+                try {
+                    const response = await fetch(`${API_BASE}/recipes.php`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: 'update',
+                            sessionToken: getSessionToken(),
+                            recipeId: recipeId,
+                            image: imageData
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        statusEl.textContent = '✅ Imagem adicionada!';
+                        statusEl.className = 'upload-status success';
+                        
+                        // Atualizar estatísticas
+                        await loadRecipes();
+                        
+                        setTimeout(() => {
+                            statusEl.textContent = '';
+                        }, 3000);
+                    } else {
+                        statusEl.textContent = '❌ Erro ao guardar';
+                        statusEl.className = 'upload-status error';
+                        showError(result.message || 'Erro ao atualizar receita.');
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    statusEl.textContent = '❌ Erro de conexão';
+                    statusEl.className = 'upload-status error';
+                    showError('Erro de conexão ao atualizar receita.');
+                }
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // ============================================
+        // FUNÇÕES DO FORMULÁRIO DE CRIAR RECEITA
+        // ============================================
+        
+        let uploadedImageAdmin = null;
+
+        function switchTab(tabName) {
+            // Atualizar tabs
+            document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tabName === 'create') {
+                document.querySelectorAll('.admin-tab')[0].classList.add('active');
+                document.getElementById('tab-create').classList.add('active');
+            } else {
+                document.querySelectorAll('.admin-tab')[1].classList.add('active');
+                document.getElementById('tab-images').classList.add('active');
+                loadRecipes(); // Recarregar lista
+            }
+        }
+
+        const subcategoriesAdmin = {
+            'Entrada': ['Petiscos', 'Salgados', 'Queijos', 'Enchidos', 'Marisco', 'Vegetarianas'],
+            'Prato Principal': ['Carne', 'Peixe', 'Vegetarianos'],
+            'Sobremesa': ['Quentes', 'Frias'],
+            'Bebida': ['Quentes', 'Frias']
+        };
+
+        function updateSubcategoriesAdmin() {
+            const category = document.getElementById('adminCategory').value;
+            const subcategorySelect = document.getElementById('adminSubcategory');
+            
+            subcategorySelect.innerHTML = '<option value="">Selecione...</option>';
+            
+            if (category && subcategoriesAdmin[category]) {
+                subcategoriesAdmin[category].forEach(sub => {
+                    subcategorySelect.innerHTML += `<option value="${sub}">${sub}</option>`;
+                });
+                subcategorySelect.disabled = false;
+            } else {
+                subcategorySelect.disabled = true;
+            }
+        }
+
+        function handleAdminImagePreview(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.match('image.*')) {
+                showError('Por favor selecione uma imagem válida.');
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                showError('A imagem é muito grande. Tamanho máximo: 5MB.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                uploadedImageAdmin = event.target.result;
+                const preview = document.getElementById('adminImagePreview');
+                preview.src = uploadedImageAdmin;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function submitRecipeAdmin(e) {
+            e.preventDefault();
+
+            const recipeData = {
+                title: document.getElementById('adminTitle').value,
+                category: document.getElementById('adminCategory').value,
+                subcategory: document.getElementById('adminSubcategory').value || null,
+                description: document.getElementById('adminDescription').value,
+                ingredients: document.getElementById('adminIngredients').value,
+                instructions: document.getElementById('adminInstructions').value,
+                prepTime: parseInt(document.getElementById('adminPrepTime').value) || null,
+                cookTime: parseInt(document.getElementById('adminCookTime').value) || null,
+                servings: parseInt(document.getElementById('adminServings').value) || null,
+                difficulty: document.getElementById('adminDifficulty').value,
+                image: uploadedImageAdmin,
+                visibility: 'public',
+                isDraft: false
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/recipes.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'create',
+                        sessionToken: getSessionToken(),
+                        ...recipeData
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showSuccess('✅ Receita criada com sucesso!');
+                    resetFormAdmin();
+                    
+                    // Mudar para tab de imagens após 2 segundos
+                    setTimeout(() => {
+                        switchTab('images');
+                    }, 2000);
+                } else {
+                    showError(result.message || 'Erro ao criar receita.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showError('Erro de conexão ao criar receita.');
+            }
+        }
+
+        function resetFormAdmin() {
+            document.getElementById('formNovaReceitaAdmin').reset();
+            document.getElementById('adminSubcategory').disabled = true;
+            document.getElementById('adminImagePreview').style.display = 'none';
+            uploadedImageAdmin = null;
+        }
+    </script>
+</body>
+</html>

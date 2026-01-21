@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Grupos de Membros - ChefGuedes</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html">ChefGuedes</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>🧪 Teste de Grupos de Membros</h1>
+            <p>Testar se os grupos aparecem corretamente quando o utilizador é membro</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Status de Login</h3>
+            <div id="loginStatus" style="padding: 15px; background: var(--bg-secondary); border-radius: 8px; margin-top: 15px;">
+                Verificando...
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Todos os Grupos (getAllGroups)</h3>
+            <button onclick="testGetAllGroups()" class="btn btn-primary">Buscar Todos os Grupos</button>
+            <div id="allGroupsResult" style="margin-top: 15px; padding: 15px; background: var(--bg-secondary); border-radius: 8px; min-height: 50px;">
+                Clique no botão para buscar
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Grupos do Utilizador (getUserGroups)</h3>
+            <button onclick="testGetUserGroups()" class="btn btn-primary">Buscar Meus Grupos</button>
+            <div id="userGroupsResult" style="margin-top: 15px; padding: 15px; background: var(--bg-secondary); border-radius: 8px; min-height: 50px;">
+                Clique no botão para buscar
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Estatísticas do Utilizador</h3>
+            <button onclick="testGetUserStats()" class="btn btn-primary">Buscar Estatísticas</button>
+            <div id="statsResult" style="margin-top: 15px; padding: 15px; background: var(--bg-secondary); border-radius: 8px; min-height: 50px;">
+                Clique no botão para buscar
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>📝 Instruções de Teste</h3>
+            <ol style="line-height: 1.8;">
+                <li>Faça login com uma conta</li>
+                <li>Teste "Buscar Todos os Grupos" - deve mostrar TODOS os grupos do sistema</li>
+                <li>Teste "Buscar Meus Grupos" - deve mostrar apenas os grupos onde você é membro (criador ou convidado)</li>
+                <li>Teste "Buscar Estatísticas" - deve contar corretamente quantos grupos você pertence</li>
+                <li><strong>Para testar o convite:</strong>
+                    <ul style="margin-top: 10px;">
+                        <li>Use uma segunda conta</li>
+                        <li>Envie um convite da primeira conta para a segunda</li>
+                        <li>Aceite o convite na segunda conta</li>
+                        <li>Verifique se o grupo aparece em "Meus Grupos" da segunda conta</li>
+                        <li>Verifique se aparece no dashboard da segunda conta</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="dashboard-card" style="background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(0, 78, 137, 0.1)); border: 2px solid var(--primary-color);">
+            <h3>✅ Correções Implementadas</h3>
+            <ul style="line-height: 1.8;">
+                <li><strong>API:</strong> Novo endpoint <code>GET /api/groups.php?user_groups=true</code> que retorna grupos onde o utilizador é membro</li>
+                <li><strong>JavaScript:</strong> Nova função <code>getUserGroups()</code> para buscar grupos do utilizador</li>
+                <li><strong>Estatísticas:</strong> <code>getUserStats()</code> agora usa <code>getUserGroups()</code> para contar corretamente</li>
+                <li><strong>Dashboard:</strong> <code>loadMyGroups()</code> agora mostra todos os grupos do utilizador, não apenas os criados por ele</li>
+                <li><strong>Página de Grupos:</strong> <code>loadGroups()</code> atualizada para usar <code>getUserGroups()</code></li>
+                <li><strong>Role Indicator:</strong> Agora mostra se o utilizador é "Administrador" ou "Membro" do grupo</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 ChefGuedes. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="js/auth-api.js"></script>
+    <script src="js/main-api.js"></script>
+    <script>
+        // Verificar status de login
+        async function checkLoginStatus() {
+            const statusDiv = document.getElementById('loginStatus');
+            const user = await getCurrentUser();
+            
+            if (user) {
+                statusDiv.innerHTML = `
+                    <div style="color: #4caf50;">
+                        ✅ Logado como: <strong>${user.username}</strong> (ID: ${user.id})
+                        ${user.user_code ? `<br>Código: <strong>${user.user_code}</strong>` : ''}
+                    </div>
+                `;
+            } else {
+                statusDiv.innerHTML = `
+                    <div style="color: #f44336;">
+                        ❌ Não está logado. <a href="login.html">Fazer login</a>
+                    </div>
+                `;
+            }
+        }
+
+        // Testar getAllGroups
+        async function testGetAllGroups() {
+            const resultDiv = document.getElementById('allGroupsResult');
+            resultDiv.innerHTML = '<p style="color: var(--text-secondary);">Carregando...</p>';
+            
+            try {
+                const groups = await getAllGroups();
+                
+                if (groups.length === 0) {
+                    resultDiv.innerHTML = '<p style="color: var(--text-secondary);">Nenhum grupo encontrado no sistema.</p>';
+                    return;
+                }
+                
+                resultDiv.innerHTML = `
+                    <p style="margin-bottom: 10px;"><strong>Total: ${groups.length} grupos</strong></p>
+                    ${groups.map(g => `
+                        <div style="padding: 10px; background: var(--bg-primary); border-radius: 4px; margin-bottom: 8px;">
+                            <strong>${g.name}</strong>
+                            <br><small>ID: ${g.id} • Criado por: ${g.created_by_name} • Membros: ${g.member_count}</small>
+                        </div>
+                    `).join('')}
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: #f44336;">Erro: ${error.message}</p>`;
+            }
+        }
+
+        // Testar getUserGroups
+        async function testGetUserGroups() {
+            const resultDiv = document.getElementById('userGroupsResult');
+            resultDiv.innerHTML = '<p style="color: var(--text-secondary);">Carregando...</p>';
+            
+            try {
+                const groups = await getUserGroups();
+                
+                if (groups.length === 0) {
+                    resultDiv.innerHTML = '<p style="color: var(--text-secondary);">Você não pertence a nenhum grupo ainda.</p>';
+                    return;
+                }
+                
+                resultDiv.innerHTML = `
+                    <p style="margin-bottom: 10px;"><strong>Total: ${groups.length} grupos</strong></p>
+                    ${groups.map(g => `
+                        <div style="padding: 10px; background: var(--bg-primary); border-radius: 4px; margin-bottom: 8px; border-left: 4px solid ${g.user_role === 'admin' ? '#4caf50' : '#2196f3'};">
+                            <strong>${g.name}</strong>
+                            <span style="background: ${g.user_role === 'admin' ? '#4caf50' : '#2196f3'}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 8px;">
+                                ${g.user_role === 'admin' ? '👑 Administrador' : '👤 Membro'}
+                            </span>
+                            <br><small>ID: ${g.id} • Criado por: ${g.created_by_name} • Membros: ${g.member_count}</small>
+                        </div>
+                    `).join('')}
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: #f44336;">Erro: ${error.message}</p>`;
+            }
+        }
+
+        // Testar getUserStats
+        async function testGetUserStats() {
+            const resultDiv = document.getElementById('statsResult');
+            resultDiv.innerHTML = '<p style="color: var(--text-secondary);">Carregando...</p>';
+            
+            try {
+                const stats = await getUserStats();
+                
+                resultDiv.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                        <div style="text-align: center; padding: 15px; background: var(--bg-primary); border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary-color);">${stats.recipes}</div>
+                            <div style="color: var(--text-secondary); margin-top: 5px;">Receitas</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: var(--bg-primary); border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--accent-color);">${stats.groups}</div>
+                            <div style="color: var(--text-secondary); margin-top: 5px;">Grupos</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: var(--bg-primary); border-radius: 8px;">
+                            <div style="font-size: 2rem; font-weight: bold; color: #4caf50;">${stats.favorites}</div>
+                            <div style="color: var(--text-secondary); margin-top: 5px;">Favoritos</div>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: #f44336;">Erro: ${error.message}</p>`;
+            }
+        }
+
+        // Inicializar
+        checkLoginStatus();
+    </script>
+</body>
+</html>

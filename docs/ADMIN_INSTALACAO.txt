@@ -1,0 +1,328 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║       🛡️  SISTEMA DE ADMINISTRAÇÃO - CHEFGUEDES             ║
+║                                                               ║
+║              GUIA DE INSTALAÇÃO E UTILIZAÇÃO                 ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════
+📋 ÍNDICE
+═══════════════════════════════════════════════════════════════
+1. Visão Geral do Sistema
+2. Pré-requisitos
+3. Instalação Passo-a-Passo
+4. Funcionalidades do Admin
+5. Como Usar
+6. Segurança
+7. Resolução de Problemas
+
+═══════════════════════════════════════════════════════════════
+📌 1. VISÃO GERAL DO SISTEMA
+═══════════════════════════════════════════════════════════════
+
+O Sistema de Administração ChefGuedes permite:
+
+✅ Gestão completa de utilizadores
+✅ Moderação de receitas
+✅ Banimento permanente de utilizadores
+✅ Suspensão temporária de utilizadores
+✅ Sistema de avisos (warnings)
+✅ Histórico completo de ações administrativas
+✅ Estatísticas em tempo real
+
+═══════════════════════════════════════════════════════════════
+🔧 2. PRÉ-REQUISITOS
+═══════════════════════════════════════════════════════════════
+
+Antes de instalar, certifique-se de ter:
+
+✓ WAMP/XAMPP instalado e em execução
+✓ MySQL em funcionamento
+✓ Base de dados "siteguedes" já criada
+✓ PHP 7.4 ou superior
+✓ Acesso ao phpMyAdmin
+
+═══════════════════════════════════════════════════════════════
+🚀 3. INSTALAÇÃO PASSO-A-PASSO
+═══════════════════════════════════════════════════════════════
+
+PASSO 1: Atualizar a Base de Dados
+─────────────────────────────────────────────────────────
+
+1. Abra o phpMyAdmin (http://localhost/phpmyadmin)
+2. Selecione a base de dados "siteguedes"
+3. Clique em "Importar" ou "SQL"
+4. Execute o ficheiro:
+   📄 database/update_admin_system.sql
+
+   OU copie e cole o conteúdo diretamente na aba SQL
+
+5. Clique em "Executar" ou "Go"
+
+⚠️ IMPORTANTE: Este script adiciona novas colunas e tabelas SEM apagar
+   dados existentes. É seguro executar!
+
+
+PASSO 2: Criar Conta de Administrador
+─────────────────────────────────────────────────────────
+
+Opção A - Via Interface Web (RECOMENDADO):
+──────────────────────────────────────────
+1. Abra o navegador
+2. Acesse: http://localhost/siteguedes/setup-admin.html
+3. Preencha os dados da conta admin:
+   • Nome de utilizador (sugestão: admin)
+   • Email (sugestão: admin@chefguedes.pt)
+   • Palavra-passe (mínimo 6 caracteres)
+4. Clique em "Criar Conta Admin"
+5. Aguarde a confirmação
+
+Opção B - Script PHP Direto:
+──────────────────────────────
+1. Acesse: http://localhost/siteguedes/install_admin_new.php
+2. Envie um POST com os dados (use Postman ou similar)
+
+
+PASSO 3: Fazer Login como Admin
+─────────────────────────────────────────────────────────
+
+1. Acesse: http://localhost/siteguedes/login.html
+2. Introduza o email e password criados no passo 2
+3. Será redirecionado automaticamente para:
+   👉 http://localhost/siteguedes/pages/admin.html
+
+═══════════════════════════════════════════════════════════════
+⚙️ 4. FUNCIONALIDADES DO ADMIN
+═══════════════════════════════════════════════════════════════
+
+📊 DASHBOARD
+─────────────
+• Total de utilizadores
+• Utilizadores banidos
+• Utilizadores suspensos
+• Total de receitas
+• Receitas públicas
+• Ações realizadas hoje
+
+👥 GESTÃO DE UTILIZADORES
+──────────────────────────
+• Ver lista completa de utilizadores
+• Pesquisar utilizadores por nome ou email
+• Ver status (Ativo, Suspenso, Banido)
+• Ver quantidade de avisos de cada utilizador
+
+⚠️ Dar Aviso:
+   - Regista um aviso no utilizador
+   - Contador de avisos é incrementado
+   - Fica registado no histórico
+
+⏸️ Suspender:
+   - Suspensão temporária (você define os dias)
+   - Utilizador não pode fazer login durante a suspensão
+   - Suspensão expira automaticamente
+
+🚫 Banir:
+   - Banimento permanente
+   - Requer motivo obrigatório
+   - Utilizador não pode mais fazer login
+   - Pode ser revertido (Desbanir)
+
+🗑️ Apagar:
+   - Remove utilizador e TODAS as suas receitas
+   - ⚠️ AÇÃO IRREVERSÍVEL!
+
+📖 GESTÃO DE RECEITAS
+──────────────────────
+• Ver todas as receitas do site
+• Pesquisar por título ou categoria
+• Ver autor de cada receita
+• Ver visibilidade (Pública, Privada, Amigos)
+
+🗑️ Apagar Receita:
+   - Remove receita do sistema
+   - Pede motivo (opcional)
+   - Fica registado no histórico
+   - ⚠️ AÇÃO IRREVERSÍVEL!
+
+═══════════════════════════════════════════════════════════════
+🎯 5. COMO USAR
+═══════════════════════════════════════════════════════════════
+
+EXEMPLO 1: Banir um Utilizador Problemático
+────────────────────────────────────────────
+1. Acesse a aba "👥 Utilizadores"
+2. Encontre o utilizador na lista (ou use a pesquisa)
+3. Clique em "Banir"
+4. Digite o motivo: "Spam repetido e conteúdo inapropriado"
+5. Confirme
+
+✅ Resultado: O utilizador não poderá mais fazer login
+
+
+EXEMPLO 2: Suspender Temporariamente
+─────────────────────────────────────
+1. Acesse a aba "👥 Utilizadores"
+2. Encontre o utilizador
+3. Clique em "Suspender"
+4. Digite o número de dias: 7
+5. Digite o motivo: "Violação das regras da comunidade"
+6. Confirme
+
+✅ Resultado: Utilizador suspenso por 7 dias
+
+
+EXEMPLO 3: Sistema de Avisos
+─────────────────────────────
+1. Primeiro aviso: Clique em "Avisar" → contador fica em (1)
+2. Segundo aviso: Clique em "Avisar" → contador fica em (2)
+3. Após 3 avisos, considere suspender ou banir
+
+
+EXEMPLO 4: Remover Receita Inapropriada
+────────────────────────────────────────
+1. Acesse a aba "📖 Receitas"
+2. Encontre a receita (ou pesquise)
+3. Clique em "Apagar"
+4. Digite o motivo: "Conteúdo não relacionado com culinária"
+5. Confirme
+
+✅ Resultado: Receita removida permanentemente
+
+
+EXEMPLO 5: Reativar Utilizador
+───────────────────────────────
+Para remover suspensão:
+1. Encontre utilizador com status "Suspenso"
+2. Clique em "Reativar"
+3. Confirme
+
+Para remover banimento:
+1. Encontre utilizador com status "Banido"
+2. Clique em "Desbanir"
+3. Confirme
+
+═══════════════════════════════════════════════════════════════
+🔒 6. SEGURANÇA
+═══════════════════════════════════════════════════════════════
+
+🛡️ Proteções Implementadas:
+────────────────────────────
+✓ Apenas contas com is_admin=1 podem aceder ao painel
+✓ Não é possível banir ou suspender outros admins
+✓ Não é possível apagar admins
+✓ Todas as ações ficam registadas na tabela admin_actions
+✓ Login de admin tem verificação extra
+✓ Sessões protegidas
+
+⚠️ RECOMENDAÇÕES DE SEGURANÇA:
+───────────────────────────────
+1. NUNCA partilhe as credenciais de admin
+2. Use uma password FORTE (mínimo 12 caracteres)
+3. Altere a password periodicamente
+4. NÃO crie múltiplas contas admin sem necessidade
+5. Após instalação, DELETE o ficheiro setup-admin.html
+6. Verifique regularmente o histórico de ações
+
+
+🗑️ Após Instalação (IMPORTANTE):
+─────────────────────────────────
+Para maior segurança, APAGUE estes ficheiros:
+
+❌ setup-admin.html
+❌ install_admin_new.php
+❌ ADMIN_INSTALACAO.txt (este ficheiro)
+
+Comando PowerShell:
+Remove-Item setup-admin.html, install_admin_new.php, ADMIN_INSTALACAO.txt
+
+═══════════════════════════════════════════════════════════════
+🔧 7. RESOLUÇÃO DE PROBLEMAS
+═══════════════════════════════════════════════════════════════
+
+PROBLEMA: "Erro ao verificar admin" ou acesso negado
+─────────────────────────────────────────────────────
+✓ Verifique se executou o SQL de atualização
+✓ Certifique-se que a conta tem is_admin=1
+✓ Limpe os cookies do navegador
+✓ Verifique se fez logout/login após criar admin
+
+
+PROBLEMA: Não consigo criar conta admin
+────────────────────────────────────────
+✓ Verifique se a base de dados foi atualizada
+✓ Veja se já existe um admin (erro: "Já existe...")
+✓ Verifique os logs de erro do PHP
+✓ Teste o ficheiro install_admin_new.php diretamente
+
+
+PROBLEMA: Botões não funcionam no painel admin
+───────────────────────────────────────────────
+✓ Verifique se o ficheiro js/admin.js está carregando
+✓ Abra o Console do navegador (F12) para ver erros
+✓ Limpe o cache do navegador (Ctrl+Shift+Delete)
+
+
+PROBLEMA: Suspensão não está a funcionar
+─────────────────────────────────────────
+✓ Verifique se a coluna suspended_until existe na tabela users
+✓ Execute novamente o SQL de atualização
+✓ Teste fazer login com um utilizador suspenso
+
+
+VERIFICAR SE TUDO ESTÁ OK:
+──────────────────────────
+Execute no phpMyAdmin (aba SQL):
+
+-- Verificar se as colunas existem
+DESCRIBE users;
+
+-- Verificar se a tabela admin_actions existe
+SHOW TABLES LIKE 'admin_actions';
+
+-- Verificar se existe admin
+SELECT id, username, email, is_admin FROM users WHERE is_admin = 1;
+
+
+═══════════════════════════════════════════════════════════════
+📞 SUPORTE
+═══════════════════════════════════════════════════════════════
+
+Se encontrar problemas:
+
+1. Verifique os logs de erro do PHP:
+   • WAMP: C:\wamp64\logs\php_error.log
+   • XAMPP: C:\xampp\php\logs\php_error_log.txt
+
+2. Ative o modo debug no PHP (adicionar no topo dos ficheiros):
+   error_reporting(E_ALL);
+   ini_set('display_errors', 1);
+
+3. Verifique o Console do navegador (F12 → Console)
+
+
+═══════════════════════════════════════════════════════════════
+✅ CHECKLIST DE INSTALAÇÃO
+═══════════════════════════════════════════════════════════════
+
+Marque conforme avança:
+
+[ ] 1. Executei o SQL update_admin_system.sql
+[ ] 2. Criei conta admin via setup-admin.html
+[ ] 3. Fiz login como admin com sucesso
+[ ] 4. Consigo ver o painel de administração
+[ ] 5. Consegui ver a lista de utilizadores
+[ ] 6. Consegui ver a lista de receitas
+[ ] 7. Testei dar um aviso a um utilizador
+[ ] 8. Testei suspender um utilizador (opcional)
+[ ] 9. Apaguei os ficheiros de instalação por segurança
+[ ] 10. Mudei a password padrão do admin
+
+
+═══════════════════════════════════════════════════════════════
+
+         ✨ SISTEMA DE ADMINISTRAÇÃO INSTALADO! ✨
+
+       Obrigado por usar o ChefGuedes Admin System
+
+═══════════════════════════════════════════════════════════════

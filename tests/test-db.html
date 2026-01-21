@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste da Base de Dados - ChefGuedes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .test-section h2 {
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .status {
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+        
+        .links {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .links a {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 20px;
+            transition: color 0.3s;
+        }
+        
+        .links a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste da Base de Dados</h1>
+        <p class="subtitle">Verifique se tudo está a funcionar corretamente</p>
+        
+        <div class="test-section">
+            <h2>1️⃣ Testar Conexão PHP</h2>
+            <button onclick="testPHP()">Testar PHP</button>
+            <div id="phpResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2️⃣ Criar Base de Dados</h2>
+            <button onclick="initDatabase()">Inicializar BD</button>
+            <div id="dbResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3️⃣ Testar API de Utilizadores</h2>
+            <button onclick="testAPI()">Testar API</button>
+            <div id="apiResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4️⃣ Executar Migrações</h2>
+            <button onclick="runMigrations()">Executar Migrações</button>
+            <div id="migrateResult"></div>
+        </div>
+        
+        <div class="links">
+            <a href="index.html">🏠 Ir para o Site</a>
+            <a href="api/init_db.php" target="_blank">🔧 Init DB</a>
+            <a href="http://localhost/phpmyadmin" target="_blank">💾 phpMyAdmin</a>
+        </div>
+    </div>
+    
+    <script>
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        function testPHP() {
+            showResult('phpResult', '⏳ A testar PHP...', 'info');
+            
+            fetch('api/db.php')
+                .then(response => response.json())
+                .then(data => {
+                    showResult('phpResult', '✅ PHP está a funcionar!', 'success');
+                })
+                .catch(error => {
+                    showResult('phpResult', '❌ Erro: ' + error.message, 'error');
+                });
+        }
+        
+        function initDatabase() {
+            showResult('dbResult', '⏳ A criar base de dados...', 'info');
+            
+            fetch('api/init_db.php')
+                .then(response => response.text())
+                .then(text => {
+                    if (text.includes('✅')) {
+                        showResult('dbResult', '✅ Base de dados criada com sucesso!<div class="code">' + text + '</div>', 'success');
+                    } else {
+                        showResult('dbResult', '⚠️ Resultado:<div class="code">' + text + '</div>', 'info');
+                    }
+                })
+                .catch(error => {
+                    showResult('dbResult', '❌ Erro: ' + error.message, 'error');
+                });
+        }
+        
+        function testAPI() {
+            showResult('apiResult', '⏳ A testar API...', 'info');
+            
+            // Testar registo de utilizador de teste
+            fetch('api/users.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: 'register',
+                    username: 'teste_' + Date.now(),
+                    email: 'teste' + Date.now() + '@teste.com',
+                    password: 'teste123'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showResult('apiResult', '✅ API está a funcionar! Utilizador de teste criado com sucesso.', 'success');
+                } else {
+                    showResult('apiResult', '⚠️ API responde mas: ' + data.message, 'info');
+                }
+            })
+            .catch(error => {
+                showResult('apiResult', '❌ Erro na API: ' + error.message, 'error');
+            });
+        }
+        
+        function runMigrations() {
+            showResult('migrateResult', '⏳ A executar migrações...', 'info');
+            
+            fetch('api/migrate.php?run=1')
+                .then(response => response.text())
+                .then(text => {
+                    if (text.includes('✅')) {
+                        showResult('migrateResult', '✅ Migrações executadas!<div class="code">' + text + '</div>', 'success');
+                    } else {
+                        showResult('migrateResult', '⚠️ Resultado:<div class="code">' + text + '</div>', 'info');
+                    }
+                })
+                .catch(error => {
+                    showResult('migrateResult', '❌ Erro: ' + error.message, 'error');
+                });
+        }
+        
+        // Auto-executar teste de PHP ao carregar
+        window.onload = function() {
+            testPHP();
+        };
+    </script>
+</body>
+</html>
