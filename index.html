@@ -108,7 +108,7 @@
         <!-- Dicas de Cozinha -->
         <section class="cooking-tips">
             <h2>Dicas de Cozinha</h2>
-            <div class="tips-grid">
+            <div class="tips-grid" id="tipsGrid">
                 <div class="tip-card">
                     <h4>Temperar Correctamente</h4>
                     <p>Adicione sal no final do cozimento para realçar os sabores naturais dos ingredientes.</p>
@@ -118,7 +118,7 @@
                     <p>Uma faca bem afiada é mais segura e eficiente. Afie regularmente as suas facas de cozinha.</p>
                 </div>
                 <div class="tip-card">
-                    <h4>Mise en Place</h4>
+                    <h4>Preparação Organizada</h4>
                     <p>Prepare todos os ingredientes antes de começar a cozinhar para um processo mais organizado.</p>
                 </div>
                 <div class="tip-card">
@@ -272,6 +272,52 @@
             }
         }
 
+        // Rotação automática de dicas de cozinha
+        const allTips = [
+            { title: 'Temperar Correctamente', text: 'Adicione sal no final do cozimento para realçar os sabores naturais dos ingredientes.' },
+            { title: 'Facas Afiadas', text: 'Uma faca bem afiada é mais segura e eficiente. Afie regularmente as suas facas de cozinha.' },
+            { title: 'Preparação Organizada', text: 'Prepare todos os ingredientes antes de começar a cozinhar para um processo mais organizado.' },
+            { title: 'Aproveitar Sobras', text: 'Transforme sobras em novas refeições criativas para reduzir desperdício alimentar.' },
+            { title: 'Temperatura do Azeite', text: 'Não deixe o azeite fumegar na frigideira. O ideal é aquecer em lume médio para preservar os nutrientes.' },
+            { title: 'Cozinhar Massa', text: 'Use bastante água com sal ao cozinhar massa. A água deve estar a ferver antes de adicionar a massa.' },
+            { title: 'Conservar Ervas', text: 'Congele ervas frescas em azeite dentro de formas de gelo para usar quando precisar.' },
+            { title: 'Peixe Fresco', text: 'O peixe fresco deve ter olhos brilhantes, guelras vermelhas e um cheiro suave a mar.' },
+            { title: 'Descascar Alho', text: 'Esmague levemente o dente de alho com a faca para soltar a pele mais facilmente.' },
+            { title: 'Lavar Arroz', text: 'Lave o arroz antes de cozinhar para remover o excesso de amido e obter grãos mais soltos.' },
+            { title: 'Aquecer a Panela', text: 'Deixe a panela aquecer bem antes de adicionar os alimentos para evitar que grudem.' },
+            { title: 'Cortar Cebola', text: 'Corte a cebola com a raiz intacta e coloque na água fria para reduzir o ardor nos olhos.' }
+        ];
+
+        let currentTipIndex = 0;
+
+        function rotateTips() {
+            const tipsGrid = document.getElementById('tipsGrid');
+            if (!tipsGrid) return;
+
+            // Selecionar 4 dicas aleatórias ou sequenciais
+            const displayTips = [];
+            for (let i = 0; i < 4; i++) {
+                displayTips.push(allTips[(currentTipIndex + i) % allTips.length]);
+            }
+
+            // Adicionar animação de fade
+            tipsGrid.style.opacity = '0';
+
+            setTimeout(() => {
+                tipsGrid.innerHTML = displayTips.map(tip => `
+                    <div class="tip-card">
+                        <h4>${tip.title}</h4>
+                        <p>${tip.text}</p>
+                    </div>
+                `).join('');
+
+                tipsGrid.style.opacity = '1';
+            }, 300);
+
+            // Avançar o índice
+            currentTipIndex = (currentTipIndex + 4) % allTips.length;
+        }
+
         // Executar ao carregar a página
         document.addEventListener('DOMContentLoaded', function() {
             updateSeasonalTitle();
@@ -279,6 +325,9 @@
             
             // REMOVER TODAS AS RECEITAS DO LOCALSTORAGE
             localStorage.removeItem('chefguedes-recipes');
+
+            // Rotacionar dicas a cada 6 segundos
+            setInterval(rotateTips, 6000);
         });
     </script>
 </body>
