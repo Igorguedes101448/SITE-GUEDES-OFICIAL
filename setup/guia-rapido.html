@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Rápido - ChefGuedes 2.0</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .guide-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .guide-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .guide-section h3 {
+            color: var(--secondary-color);
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        
+        .guide-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .guide-list li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+            line-height: 1.8;
+        }
+        
+        .guide-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .feature-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .code-box {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: var(--border-radius-sm);
+            border-left: 4px solid var(--primary-color);
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            color: var(--text-primary);
+        }
+        
+        .tip-box {
+            background: var(--bg-secondary);
+            padding: 15px 20px;
+            border-radius: var(--border-radius-sm);
+            border-left: 4px solid var(--accent-color);
+            margin: 15px 0;
+        }
+        
+        .tip-box strong {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html">ChefGuedes</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="pages/explorar-receitas.html">Explorar Receitas</a></li>
+                <li id="authMenuItems"></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>Guia Rápido - ChefGuedes 2.0</h1>
+            <p>Aprenda a usar todas as funcionalidades da plataforma</p>
+        </div>
+
+        <!-- Novidades -->
+        <div class="guide-section">
+            <h2>🎉 Novidades da Versão 2.0</h2>
+            <ul class="guide-list">
+                <li><strong>Sistema de Convites de Grupo</strong> - Agora os utilizadores precisam aceitar convites antes de entrar em grupos</li>
+                <li><strong>Agendamento de Refeições</strong> - Planeie suas refeições pessoais e de grupo</li>
+                <li><strong>Assistente IA Culinário</strong> - Sugestões inteligentes de receitas e planos semanais</li>
+                <li><strong>Dashboard Melhorada</strong> - Visualize convites pendentes e estatísticas completas</li>
+                <li><strong>Sistema de Notificações</strong> - Receba atualizações em tempo real</li>
+            </ul>
+        </div>
+
+        <!-- Primeiros Passos -->
+        <div class="guide-section">
+            <h2>🚀 Primeiros Passos</h2>
+            
+            <h3>1. Criar Conta</h3>
+            <ul class="guide-list">
+                <li>Acesse <a href="login.html">Página de Login</a></li>
+                <li>Clique em "Criar conta"</li>
+                <li>Preencha: Username, Email e Password</li>
+                <li>Você receberá um <strong>código de utilizador único</strong> (6 caracteres)</li>
+            </ul>
+            
+            <div class="tip-box">
+                <strong>💡 Dica:</strong> Guarde seu código de utilizador! Ele será usado para outras pessoas te adicionarem a grupos.
+            </div>
+            
+            <div class="code-box">
+                Exemplo de código: <strong>ABC123</strong>
+            </div>
+
+            <h3>2. Configurar Perfil</h3>
+            <ul class="guide-list">
+                <li>Acesse <a href="pages/perfil.html">Meu Perfil</a></li>
+                <li>Adicione foto de perfil</li>
+                <li>Complete suas informações (bio, localização)</li>
+                <li>Defina preferências culinárias</li>
+            </ul>
+        </div>
+
+        <!-- Grupos -->
+        <div class="guide-section">
+            <h2>👥 Sistema de Grupos <span class="feature-badge">MELHORADO</span></h2>
+            
+            <h3>Criar um Grupo</h3>
+            <ul class="guide-list">
+                <li>Dashboard → Botão "Novo Grupo"</li>
+                <li>Preencha nome e descrição</li>
+                <li>Você será automaticamente o <strong>administrador</strong></li>
+            </ul>
+
+            <h3>Convidar Membros <span class="feature-badge">NOVO</span></h3>
+            <ul class="guide-list">
+                <li>Abra o grupo em <a href="pages/grupos.html">Meus Grupos</a></li>
+                <li>Clique em "Adicionar Membro"</li>
+                <li>Insira o código do utilizador (6 caracteres)</li>
+                <li><strong>Convite será enviado</strong> (não adiciona automaticamente)</li>
+                <li>Aguarde a pessoa aceitar ou recusar</li>
+            </ul>
+
+            <h3>Responder a Convites <span class="feature-badge">NOVO</span></h3>
+            <ul class="guide-list">
+                <li>Acesse a <a href="pages/dashboard.html">Dashboard</a></li>
+                <li>Veja a seção "Convites Pendentes"</li>
+                <li>Clique em ✓ para <strong>aceitar</strong></li>
+                <li>Clique em ✗ para <strong>recusar</strong></li>
+                <li>O administrador será notificado da sua decisão</li>
+            </ul>
+
+            <div class="tip-box">
+                <strong>💡 Importante:</strong> Você só entra no grupo após aceitar o convite. Isso garante sua privacidade e controle!
+            </div>
+        </div>
+
+        <!-- Agendamento -->
+        <div class="guide-section">
+            <h2>📅 Agendamento de Refeições <span class="feature-badge">NOVO</span></h2>
+            
+            <h3>Agenda Pessoal</h3>
+            <ul class="guide-list">
+                <li>Dashboard → "Agendar refeição"</li>
+                <li>Escolha: Data, Hora, Tipo de refeição</li>
+                <li>Selecione uma receita (opcional)</li>
+                <li>Adicione notas (opcional)</li>
+                <li>Clique em "Guardar"</li>
+            </ul>
+
+            <h3>Agenda de Grupo</h3>
+            <ul class="guide-list">
+                <li>Grupos → Selecione um grupo</li>
+                <li>Tab "Agendamento Semanal"</li>
+                <li>Clique em um dia da semana</li>
+                <li>Preencha os detalhes da refeição</li>
+                <li><strong>Todos os membros recebem notificação</strong></li>
+            </ul>
+
+            <h3>Tipos de Refeição</h3>
+            <div class="code-box">
+                • Pequeno-almoço<br>
+                • Almoço<br>
+                • Jantar<br>
+                • Lanche
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Dica:</strong> Use a agenda de grupo para planejar jantares especiais ou eventos culinários com amigos!
+            </div>
+        </div>
+
+        <!-- Assistente IA -->
+        <div class="guide-section">
+            <h2>🤖 Assistente IA Culinário <span class="feature-badge">NOVO</span></h2>
+            
+            <h3>Sugestões de Receitas</h3>
+            <p>O assistente sugere receitas baseadas em:</p>
+            <ul class="guide-list">
+                <li><strong>Tempo disponível</strong> - "Tenho 30 minutos"</li>
+                <li><strong>Número de pessoas</strong> - "Para 4 pessoas"</li>
+                <li><strong>Dificuldade</strong> - "Fácil, Média ou Difícil"</li>
+                <li><strong>Suas preferências</strong> - Baseado no seu perfil</li>
+            </ul>
+
+            <h3>Plano Semanal Automático</h3>
+            <ul class="guide-list">
+                <li>Solicite um plano para 7 dias</li>
+                <li>Defina quantas refeições por dia</li>
+                <li>IA seleciona receitas variadas</li>
+                <li>Você pode ajustar conforme necessário</li>
+            </ul>
+
+            <h3>Melhorias de Receitas</h3>
+            <ul class="guide-list">
+                <li>Abra uma receita sua</li>
+                <li>Clique em "Pedir Sugestões"</li>
+                <li>IA analisa e sugere melhorias</li>
+                <li>Exemplo: Adicionar imagem, melhorar descrição, etc.</li>
+            </ul>
+
+            <div class="tip-box">
+                <strong>💡 Nota:</strong> O assistente IA aprende com suas preferências ao longo do tempo!
+            </div>
+        </div>
+
+        <!-- Notificações -->
+        <div class="guide-section">
+            <h2>🔔 Sistema de Notificações <span class="feature-badge">NOVO</span></h2>
+            
+            <h3>Tipos de Notificações</h3>
+            <ul class="guide-list">
+                <li><strong>Convites de Grupo</strong> - Quando alguém te convida</li>
+                <li><strong>Resposta a Convite</strong> - Quando aceitam/recusam seu convite</li>
+                <li><strong>Refeições Agendadas</strong> - Lembretes de refeições do grupo</li>
+                <li><strong>Sistema</strong> - Atualizações importantes</li>
+            </ul>
+
+            <h3>Gerenciar Notificações</h3>
+            <ul class="guide-list">
+                <li>Clique no ícone 🔔 no topo da página</li>
+                <li>Ver contador de não lidas</li>
+                <li>Marcar como lidas individualmente</li>
+                <li>Marcar todas como lidas</li>
+                <li>Eliminar notificações antigas</li>
+            </ul>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="guide-section">
+            <h2>📊 Dashboard <span class="feature-badge">MELHORADA</span></h2>
+            
+            <h3>O que você encontra:</h3>
+            <ul class="guide-list">
+                <li><strong>Estatísticas</strong> - Total de receitas, grupos, favoritos, agendamentos</li>
+                <li><strong>Convites Pendentes</strong> - Aceitar/Recusar convites de grupo</li>
+                <li><strong>Receitas Recentes</strong> - Suas últimas criações</li>
+                <li><strong>Meus Grupos</strong> - Grupos que você administra</li>
+                <li><strong>Próximas Refeições</strong> - Agendamentos dos próximos 7 dias</li>
+                <li><strong>Atividades Recentes</strong> - Histórico de ações</li>
+            </ul>
+
+            <div class="tip-box">
+                <strong>💡 Dica:</strong> A Dashboard é seu centro de controle. Visite regularmente para não perder nada!
+            </div>
+        </div>
+
+        <!-- Receitas -->
+        <div class="guide-section">
+            <h2>📖 Gestão de Receitas</h2>
+            
+            <h3>Criar Receita</h3>
+            <ul class="guide-list">
+                <li>Clique em "Nova Receita"</li>
+                <li>Preencha todos os campos</li>
+                <li>Adicione imagem (recomendado)</li>
+                <li>Defina visibilidade (pública/privada)</li>
+                <li>Guardar como rascunho ou publicar</li>
+            </ul>
+
+            <h3>Campos Importantes</h3>
+            <ul class="guide-list">
+                <li><strong>Título</strong> - Nome atrativo</li>
+                <li><strong>Categoria</strong> - Ex: Sobremesas, Carnes, etc</li>
+                <li><strong>Ingredientes</strong> - Liste todos</li>
+                <li><strong>Quantidades</strong> - Especifique medidas</li>
+                <li><strong>Instruções</strong> - Passo a passo claro</li>
+                <li><strong>Tempo</strong> - Preparação + Confecção</li>
+                <li><strong>Porções</strong> - Quantas pessoas serve</li>
+                <li><strong>Dificuldade</strong> - Fácil, Média ou Difícil</li>
+            </ul>
+        </div>
+
+        <!-- Dicas -->
+        <div class="guide-section">
+            <h2>💡 Dicas Profissionais</h2>
+            
+            <h3>Para Melhor Experiência:</h3>
+            <ul class="guide-list">
+                <li>Complete seu perfil com foto e bio</li>
+                <li>Adicione imagens apetitosas às receitas</li>
+                <li>Use o assistente IA para ideias</li>
+                <li>Planeje refeições com antecedência</li>
+                <li>Crie grupos temáticos (ex: "Jantares de Domingo")</li>
+                <li>Responda convites prontamente</li>
+                <li>Verifique notificações regularmente</li>
+            </ul>
+
+            <h3>Segurança:</h3>
+            <ul class="guide-list">
+                <li>Nunca compartilhe sua password</li>
+                <li>Use password forte</li>
+                <li>Faça logout em computadores públicos</li>
+                <li>Guarde bem seu código de utilizador</li>
+            </ul>
+        </div>
+
+        <!-- Atalhos -->
+        <div class="guide-section">
+            <h2>⌨️ Atalhos Úteis</h2>
+            
+            <h3>Navegação Rápida:</h3>
+            <div class="code-box">
+                Dashboard: /pages/dashboard.html<br>
+                Grupos: /pages/grupos.html<br>
+                Perfil: /pages/perfil.html<br>
+                Nova Receita: /pages/nova-receita.html<br>
+                Explorar: /pages/explorar-receitas.html
+            </div>
+        </div>
+
+        <!-- Suporte -->
+        <div class="guide-section">
+            <h2>🆘 Precisa de Ajuda?</h2>
+            
+            <h3>Resolução de Problemas Comuns:</h3>
+            
+            <h4>Não recebo convites:</h4>
+            <ul class="guide-list">
+                <li>Verifique se o convidador usou seu código correto</li>
+                <li>Atualize a página</li>
+                <li>Verifique as notificações</li>
+            </ul>
+
+            <h4>Erro ao agendar refeição:</h4>
+            <ul class="guide-list">
+                <li>Certifique-se que é membro do grupo</li>
+                <li>Verifique se selecionou uma data futura</li>
+                <li>Tente novamente em alguns segundos</li>
+            </ul>
+
+            <h4>Notificações não aparecem:</h4>
+            <ul class="guide-list">
+                <li>Limpe o cache do navegador</li>
+                <li>Faça logout e login novamente</li>
+                <li>Verifique se tem permissões de notificação</li>
+            </ul>
+        </div>
+
+        <div class="guide-section" style="text-align: center; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white;">
+            <h2 style="color: white; border-bottom: 2px solid rgba(255,255,255,0.3);">🎉 Pronto para Começar!</h2>
+            <p style="font-size: 1.2rem; margin: 20px 0;">Aproveite todas as funcionalidades do ChefGuedes 2.0</p>
+            <a href="pages/dashboard.html" class="btn" style="background: white; color: var(--primary-color); margin-top: 20px; display: inline-block;">Ir para Dashboard</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 ChefGuedes. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="js/auth-api.js"></script>
+    <script src="js/main-api.js"></script>
+</body>
+</html>

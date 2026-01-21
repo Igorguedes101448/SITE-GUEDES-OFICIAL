@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Instalação Admin - ChefGuedes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+        
+        .step h2 {
+            display: inline-block;
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .step-content {
+            margin-left: 55px;
+            color: #555;
+            line-height: 1.8;
+        }
+        
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 10px 10px 10px 0;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+        
+        .checklist {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .checklist h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .checklist label {
+            display: block;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .checklist label:hover {
+            background: #e9ecef;
+        }
+        
+        .checklist input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .links {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Sistema de Administração</h1>
+        <p class="subtitle">Guia de Instalação - ChefGuedes</p>
+        
+        <div class="alert alert-warning">
+            <strong>⚠️ Atenção:</strong> Siga os passos na ordem correta para garantir uma instalação bem-sucedida.
+        </div>
+        
+        <!-- PASSO 1 -->
+        <div class="step">
+            <span class="step-number">1</span>
+            <h2>Atualizar Base de Dados</h2>
+            <div class="step-content">
+                <p><strong>Abra o phpMyAdmin e execute o script SQL:</strong></p>
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li>Acesse <a href="http://localhost/phpmyadmin" target="_blank">http://localhost/phpmyadmin</a></li>
+                    <li>Selecione a base de dados: <strong>siteguedes</strong></li>
+                    <li>Clique na aba "SQL"</li>
+                    <li>Abra o ficheiro <code>INSTALAR_ADMIN.sql</code> e copie todo o conteúdo</li>
+                    <li>Cole no phpMyAdmin e clique em "Executar"</li>
+                </ol>
+                <div class="alert alert-success" style="margin-top: 15px;">
+                    ✅ Deve ver a mensagem: "Base de dados atualizada com sucesso!"
+                </div>
+            </div>
+        </div>
+        
+        <!-- PASSO 2 -->
+        <div class="step">
+            <span class="step-number">2</span>
+            <h2>Criar Conta Admin</h2>
+            <div class="step-content">
+                <p><strong>Use a interface web para criar a primeira conta de administrador:</strong></p>
+                <a href="setup-admin.html" class="btn" target="_blank">🚀 Criar Conta Admin</a>
+                <p style="margin-top: 15px;">
+                    Ou acesse manualmente: 
+                    <code style="background: #f8f9fa; padding: 5px 10px; border-radius: 4px;">
+                        http://localhost/siteguedes/setup-admin.html
+                    </code>
+                </p>
+                <p style="margin-top: 15px;"><strong>Credenciais sugeridas:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li>👤 Username: <strong>admin</strong></li>
+                    <li>📧 Email: <strong>admin@chefguedes.pt</strong></li>
+                    <li>🔑 Password: <strong>[escolha uma senha forte]</strong></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- PASSO 3 -->
+        <div class="step">
+            <span class="step-number">3</span>
+            <h2>Fazer Login</h2>
+            <div class="step-content">
+                <p><strong>Acesse o sistema com a conta criada:</strong></p>
+                <a href="login.html" class="btn">🔐 Fazer Login</a>
+                <p style="margin-top: 15px;">
+                    Após o login, será redirecionado automaticamente para o painel de administração.
+                </p>
+            </div>
+        </div>
+        
+        <!-- CHECKLIST -->
+        <div class="checklist">
+            <h3>📋 Checklist de Instalação</h3>
+            <label>
+                <input type="checkbox"> Executei o script SQL no phpMyAdmin
+            </label>
+            <label>
+                <input type="checkbox"> Criei a conta de administrador
+            </label>
+            <label>
+                <input type="checkbox"> Fiz login com sucesso
+            </label>
+            <label>
+                <input type="checkbox"> Consegui aceder ao painel de administração
+            </label>
+            <label>
+                <input type="checkbox"> Testei as funcionalidades básicas
+            </label>
+            <label>
+                <input type="checkbox"> Apaguei os ficheiros de instalação (por segurança)
+            </label>
+        </div>
+        
+        <!-- ALERTA DE SEGURANÇA -->
+        <div class="alert alert-warning">
+            <strong>🔒 SEGURANÇA:</strong> Após confirmar que tudo funciona, apague os seguintes ficheiros:
+            <div class="code">
+setup-admin.html
+install_admin_new.php
+ADMIN_INSTALACAO.txt
+README_ADMIN.md
+INSTALAR_ADMIN.sql
+INSTALACAO_RAPIDA.txt
+guia-instalacao-admin.html
+            </div>
+        </div>
+        
+        <!-- LINKS ÚTEIS -->
+        <div class="links">
+            <h3 style="margin-bottom: 15px;">📚 Recursos Adicionais</h3>
+            <a href="INSTALACAO_RAPIDA.txt" class="btn btn-secondary">📄 Guia Rápido (TXT)</a>
+            <a href="ADMIN_INSTALACAO.txt" class="btn btn-secondary">📖 Guia Completo (TXT)</a>
+            <a href="README_ADMIN.md" class="btn btn-secondary">📝 README</a>
+        </div>
+    </div>
+</body>
+</html>

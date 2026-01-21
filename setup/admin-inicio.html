@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Admin - ChefGuedes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 50px;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+        }
+        .link-grid {
+            display: grid;
+            gap: 10px;
+        }
+        .link {
+            display: block;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s;
+            border-left: 4px solid #667eea;
+        }
+        .link:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        .link-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        .link-desc {
+            font-size: 13px;
+            color: #666;
+        }
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-left: 8px;
+        }
+        .badge-success {
+            background: #28a745;
+        }
+        .badge-warning {
+            background: #ffc107;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Sistema Admin</h1>
+        <p class="subtitle">ChefGuedes - Painel de Controlo</p>
+        
+        <!-- INSTALAÇÃO -->
+        <div class="section">
+            <h2>📦 Instalação</h2>
+            <div class="link-grid">
+                <a href="guia-instalacao-admin.html" class="link">
+                    <div class="link-title">🚀 Guia de Instalação Interativo <span class="badge-success badge">RECOMENDADO</span></div>
+                    <div class="link-desc">Interface web com passo-a-passo completo</div>
+                </a>
+                <a href="setup-admin.html" class="link">
+                    <div class="link-title">⚙️ Criar Conta Admin</div>
+                    <div class="link-desc">Interface para criar a primeira conta de administrador</div>
+                </a>
+                <a href="verificar-instalacao-admin.html" class="link">
+                    <div class="link-title">🔍 Verificar Instalação</div>
+                    <div class="link-desc">Testa se o sistema foi instalado corretamente</div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- SISTEMA -->
+        <div class="section">
+            <h2>🎯 Sistema</h2>
+            <div class="link-grid">
+                <a href="login.html" class="link">
+                    <div class="link-title">🔐 Login Admin <span class="badge">PRINCIPAL</span></div>
+                    <div class="link-desc">Acesso ao painel de administração</div>
+                </a>
+                <a href="pages/admin.html" class="link">
+                    <div class="link-title">🛡️ Painel de Administração</div>
+                    <div class="link-desc">Gestão de utilizadores e receitas (requer login)</div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- DOCUMENTAÇÃO -->
+        <div class="section">
+            <h2>📚 Documentação</h2>
+            <div class="link-grid">
+                <a href="INSTALACAO_RAPIDA.txt" class="link" target="_blank">
+                    <div class="link-title">⚡ Guia Rápido (TXT)</div>
+                    <div class="link-desc">3 passos simples para instalar</div>
+                </a>
+                <a href="ADMIN_INSTALACAO.txt" class="link" target="_blank">
+                    <div class="link-title">📖 Guia Completo (TXT)</div>
+                    <div class="link-desc">Manual detalhado com troubleshooting</div>
+                </a>
+                <a href="README_ADMIN.md" class="link" target="_blank">
+                    <div class="link-title">📝 README Técnico</div>
+                    <div class="link-desc">Documentação markdown completa</div>
+                </a>
+                <a href="SUMARIO_ADMIN.txt" class="link" target="_blank">
+                    <div class="link-title">📊 Sumário Executivo</div>
+                    <div class="link-desc">Visão geral da implementação</div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- AVISOS -->
+        <div class="section">
+            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 8px;">
+                <strong>⚠️ SEGURANÇA:</strong> Após instalação, apague todos os ficheiros desta pasta por segurança:
+                <ul style="margin-top: 10px; margin-left: 20px; font-size: 13px;">
+                    <li>setup-admin.html</li>
+                    <li>install_admin_new.php</li>
+                    <li>guia-instalacao-admin.html</li>
+                    <li>verificar-instalacao-admin.html</li>
+                    <li>admin-inicio.html (este ficheiro)</li>
+                    <li>Todos os ficheiros .txt de documentação</li>
+                    <li>README_ADMIN.md</li>
+                    <li>INSTALAR_ADMIN.sql</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- VOLTAR -->
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="index.html" style="color: #667eea; text-decoration: none; font-weight: 600;">
+                ← Voltar ao Site Principal
+            </a>
+        </div>
+    </div>
+</body>
+</html>

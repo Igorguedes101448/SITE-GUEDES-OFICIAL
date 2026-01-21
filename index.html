@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChefGuedes - Home</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html">ChefGuedes</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="pages/explorar-receitas.html">Explorar Receitas</a></li>
+                <li id="authMenuItems"></li>
+            </ul>
+            <div id="notificationDropdown" class="notification-dropdown" style="display: none;">
+                <button class="notification-btn" onclick="toggleNotifications()">
+                    <span id="notificationBadge" class="notification-badge" style="display: none;">0</span>
+                </button>
+                <div id="notificationMenu" class="notification-menu">
+                    <div class="notification-header">
+                        <h4>Notificações</h4>
+                        <button onclick="markAllRead()" style="background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 0.9rem;">Marcar todas como lidas</button>
+                    </div>
+                    <div id="notificationList" class="notification-list">
+                        <p style="text-align: center; color: var(--text-secondary); padding: 20px;">Sem notificações</p>
+                    </div>
+                </div>
+            </div>
+            <div id="profileDropdown" class="profile-dropdown" style="display: none;">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <img id="profileImage" src="" alt="Perfil" class="profile-image">
+                    <span id="profileName"></span>
+                </button>
+                <div id="profileMenu" class="profile-menu">
+                    <a href="pages/perfil.html">Meu Perfil</a>
+                    <a href="pages/dashboard.html">Dashboard</a>
+                    <a href="#" onclick="logout(); return false;">Sair</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Bem-vindo ao ChefGuedes</h1>
+            <p>Descubra, partilhe e organize as suas receitas favoritas com amigos e família.</p>
+        </section>
+
+        <!-- Receitas em Destaque - Hero Slider -->
+        <section class="featured-recipe">
+            <h2>Receitas em Destaque</h2>
+            <div class="hero-slider">
+                <div class="slider-container" id="sliderContainer">
+                    <!-- Slides serão inseridos dinamicamente via JavaScript -->
+                </div>
+                <button class="slider-btn slider-btn-prev" onclick="previousSlide()" aria-label="Anterior">‹</button>
+                <button class="slider-btn slider-btn-next" onclick="nextSlide()" aria-label="Próximo">›</button>
+                <div class="slider-dots" id="sliderDots"></div>
+            </div>
+        </section>
+
+        <section class="features">
+            <h2>O que pode fazer:</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Explorar Receitas</h3>
+                    <p>Navegue por milhares de receitas partilhadas pela comunidade.</p>
+                    <a href="pages/explorar-receitas.html" class="btn">Explorar</a>
+                </div>
+                <div class="feature-card">
+                    <h3>Criar Grupos</h3>
+                    <p>Organize grupos familiares ou de amigos e planeie refeições em conjunto.</p>
+                    <a href="pages/grupos.html" class="btn">Ver Grupos</a>
+                </div>
+                <div class="feature-card">
+                    <h3>Gerir Perfil</h3>
+                    <p>Personalize o seu perfil e gerencie as suas receitas favoritas.</p>
+                    <a href="pages/perfil.html" class="btn">Meu Perfil</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="quick-access">
+            <h2>Acesso Rápido</h2>
+            <div class="quick-links">
+                <a href="pages/dashboard.html" class="quick-link-card">
+                    <h3>Dashboard</h3>
+                    <p>Visão geral das suas atividades</p>
+                </a>
+                <a href="pages/explorar-receitas.html" class="quick-link-card">
+                    <h3>Receitas Recentes</h3>
+                    <p>Últimas receitas partilhadas</p>
+                </a>
+                <a href="pages/grupos.html" class="quick-link-card">
+                    <h3>Planear a Semana</h3>
+                    <p>Organize as refeições semanais</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Dicas de Cozinha -->
+        <section class="cooking-tips">
+            <h2>Dicas de Cozinha</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h4>Temperar Correctamente</h4>
+                    <p>Adicione sal no final do cozimento para realçar os sabores naturais dos ingredientes.</p>
+                </div>
+                <div class="tip-card">
+                    <h4>Facas Afiadas</h4>
+                    <p>Uma faca bem afiada é mais segura e eficiente. Afie regularmente as suas facas de cozinha.</p>
+                </div>
+                <div class="tip-card">
+                    <h4>Mise en Place</h4>
+                    <p>Prepare todos os ingredientes antes de começar a cozinhar para um processo mais organizado.</p>
+                </div>
+                <div class="tip-card">
+                    <h4>Aproveitar Sobras</h4>
+                    <p>Transforme sobras em novas refeições criativas para reduzir desperdício alimentar.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter -->
+        <section class="newsletter-section">
+            <div class="newsletter-container">
+                <h3>Receba Receitas Semanais</h3>
+                <p>Subscreva a nossa newsletter e receba as melhores receitas diretamente no seu email.</p>
+                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                    <input type="email" placeholder="O seu email" required class="newsletter-input">
+                    <button type="submit" class="btn btn-primary">Subscrever</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 ChefGuedes. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="js/auth-api.js"></script>
+    <script src="js/main-api.js"></script>
+    <script src="js/clear-recipes.js"></script>
+    <script src="js/receitas-portuguesas.js"></script>
+    <script>
+        // ===== HERO SLIDER =====
+        let currentSlideIndex = 0;
+        let sliderInterval;
+        let receitasDestaque = [];
+
+        function initializeSlider() {
+            // Obter receitas em destaque
+            receitasDestaque = getReceitasDestaque(5);
+            
+            const sliderContainer = document.getElementById('sliderContainer');
+            const sliderDots = document.getElementById('sliderDots');
+            
+            // Criar slides
+            sliderContainer.innerHTML = receitasDestaque.map(receita => `
+                <div class="slider-slide">
+                    <div class="slider-image">
+                        <img src="${receita.imagem}" alt="${receita.titulo}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'slider-image-placeholder\\'>Imagem em breve</div>'">
+                    </div>
+                    <div class="slider-content">
+                        <h3>${receita.titulo}</h3>
+                        <p>${receita.descricao}</p>
+                        <div class="slider-meta">
+                            <span class="slider-meta-item">${receita.tempo}</span>
+                            <span class="slider-meta-item">${receita.dificuldade}</span>
+                            <span class="slider-meta-item">${receita.categoria}</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="viewReceitaCompleta('${receita.id}')">Ver Receita Completa</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Criar dots
+            sliderDots.innerHTML = receitasDestaque.map((_, index) => `
+                <div class="slider-dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></div>
+            `).join('');
+            
+            // Iniciar autoplay
+            startSliderAutoplay();
+        }
+
+        function goToSlide(index) {
+            currentSlideIndex = index;
+            updateSlider();
+        }
+
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % receitasDestaque.length;
+            updateSlider();
+            resetSliderAutoplay();
+        }
+
+        function previousSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + receitasDestaque.length) % receitasDestaque.length;
+            updateSlider();
+            resetSliderAutoplay();
+        }
+
+        function updateSlider() {
+            const sliderContainer = document.getElementById('sliderContainer');
+            const dots = document.querySelectorAll('.slider-dot');
+            
+            sliderContainer.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+            
+            dots.forEach((dot, index) => {
+                if (index === currentSlideIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function startSliderAutoplay() {
+            sliderInterval = setInterval(() => {
+                nextSlide();
+            }, 5000); // Muda a cada 5 segundos
+        }
+
+        function resetSliderAutoplay() {
+            clearInterval(sliderInterval);
+            startSliderAutoplay();
+        }
+
+        function viewReceitaCompleta(receitaId) {
+            window.location.href = `pages/receita-detalhes.html?id=${receitaId}`;
+        }
+
+        // Ver receita em destaque
+        function viewFeaturedRecipe() {
+            // TODAS AS RECEITAS FORAM REMOVIDAS
+            showError('Todas as receitas foram removidas do sistema.');
+        }
+
+        // Newsletter
+        function subscribeNewsletter(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            showSuccess('Obrigado! Subscrição registada para: ' + email);
+            event.target.reset();
+        }
+
+        // Definir título da estação baseado no mês
+        function updateSeasonalTitle() {
+            const month = new Date().getMonth() + 1; // 1-12
+            let season = '';
+            
+            if (month >= 3 && month <= 5) {
+                season = 'Sabores da Primavera';
+            } else if (month >= 6 && month <= 8) {
+                season = 'Sabores do Verão';
+            } else if (month >= 9 && month <= 11) {
+                season = 'Sabores do Outono';
+            } else {
+                season = 'Sabores do Inverno';
+            }
+            
+            const titleElement = document.getElementById('seasonalTitle');
+            if (titleElement) {
+                titleElement.textContent = season;
+            }
+        }
+
+        // Executar ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSeasonalTitle();
+            initializeSlider(); // Inicializar slider de receitas
+            
+            // REMOVER TODAS AS RECEITAS DO LOCALSTORAGE
+            localStorage.removeItem('chefguedes-recipes');
+        });
+    </script>
+</body>
+</html>

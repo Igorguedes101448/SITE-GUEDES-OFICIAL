@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instalação Admin - ChefGuedes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .alert {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .credentials {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .credentials h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .credentials p {
+            color: #666;
+            margin: 5px 0;
+            font-family: monospace;
+        }
+        
+        .steps {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .steps h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .steps ol {
+            padding-left: 20px;
+        }
+        
+        .steps li {
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Instalação do Admin</h1>
+            <p>Sistema de Administração ChefGuedes</p>
+        </div>
+        
+        <div class="alert">
+            <strong>⚠️ Atenção:</strong> Este processo cria a primeira conta de administrador. Execute apenas uma vez!
+        </div>
+        
+        <div id="message"></div>
+        
+        <form id="adminForm">
+            <div class="form-group">
+                <label for="username">👤 Nome de Utilizador</label>
+                <input type="text" id="username" name="username" value="admin" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">📧 Email</label>
+                <input type="email" id="email" name="email" value="admin@chefguedes.pt" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">🔑 Palavra-passe</label>
+                <input type="password" id="password" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">🔑 Confirmar Palavra-passe</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirme a palavra-passe" required minlength="6">
+            </div>
+            
+            <button type="submit" class="btn">Criar Conta Admin</button>
+        </form>
+        
+        <div class="steps">
+            <h3>📋 Próximos Passos:</h3>
+            <ol>
+                <li>Preencha os dados do administrador acima</li>
+                <li>Clique em "Criar Conta Admin"</li>
+                <li>Acesse <strong>/login.html</strong> e faça login com as credenciais criadas</li>
+                <li>Você será redirecionado para o painel de administração</li>
+            </ol>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('adminForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validações
+            if (password !== confirmPassword) {
+                showMessage('As palavras-passe não coincidem!', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('A palavra-passe deve ter pelo menos 6 caracteres!', 'error');
+                return;
+            }
+            
+            // Desabilitar botão
+            const btn = document.querySelector('.btn');
+            btn.disabled = true;
+            btn.textContent = 'Criando...';
+            
+            try {
+                const response = await fetch('install_admin_new.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage(data.message, 'success');
+                    
+                    // Mostrar credenciais
+                    const credentialsDiv = document.createElement('div');
+                    credentialsDiv.className = 'credentials';
+                    credentialsDiv.innerHTML = `
+                        <h3>✅ Conta Admin Criada!</h3>
+                        <p><strong>Email:</strong> ${email}</p>
+                        <p><strong>Acesso:</strong> <a href="login.html">Fazer Login</a></p>
+                    `;
+                    document.querySelector('.container').appendChild(credentialsDiv);
+                    
+                    // Esconder formulário
+                    document.getElementById('adminForm').style.display = 'none';
+                    
+                    // Redirecionar após 3 segundos
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 3000);
+                } else {
+                    showMessage(data.message, 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Criar Conta Admin';
+                }
+            } catch (error) {
+                showMessage('Erro ao criar conta: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.textContent = 'Criar Conta Admin';
+            }
+        });
+        
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = `alert alert-${type}`;
+            messageDiv.innerHTML = `<strong>${type === 'success' ? '✅' : '❌'}</strong> ${message}`;
+            messageDiv.style.display = 'block';
+            
+            // Scroll para mensagem
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
