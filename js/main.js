@@ -130,7 +130,7 @@ function updateAuthMenu() {
                 </button>
                 <div class="user-dropdown" role="menu" aria-hidden="true">
                     <a href="${guiaPath}">Guia</a>
-                    <a href="${dashboardPath}">Dashboard</a>
+                    <a href="${dashboardPath}">Minha Cozinha</a>
                     <a href="${perfilPath}">Perfil</a>
                     <a href="#" onclick="logoutUser(); return false;">Sair</a>
                 </div>

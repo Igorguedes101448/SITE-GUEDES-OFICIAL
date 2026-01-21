@@ -110,6 +110,23 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     transition: background-color 0.3s ease, color 0.3s ease;
+    position: relative;
+    min-height: 100vh;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/fundo%20do%20site/fundo2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(8px);
+    z-index: -1;
 }
 
 /* ============================================
@@ -2233,6 +2250,15 @@ body {
 
 .notification-btn:hover {
     background-color: rgba(255, 107, 53, 0.1);
+}
+
+/* Ícone do sininho - preto no tema claro, branco no tema escuro */
+.notification-btn .bell-icon {
+    filter: grayscale(1) brightness(0);
+}
+
+[data-theme="dark"] .notification-btn .bell-icon {
+    filter: grayscale(1) brightness(2);
 }
 
 .notification-badge {
