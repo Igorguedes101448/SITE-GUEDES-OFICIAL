@@ -1691,6 +1691,8 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 25px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
 }
 
 .tip-card {

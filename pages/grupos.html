@@ -19,6 +19,7 @@
             </ul>
             <div id="notificationDropdown" class="notification-dropdown" style="display: none;">
                 <button class="notification-btn" onclick="toggleNotifications()">
+                    <span style="filter: grayscale(1) brightness(0);">🔔</span>
                     <span id="notificationBadge" class="notification-badge" style="display: none;">0</span>
                 </button>
                 <div id="notificationMenu" class="notification-menu">
@@ -95,6 +96,31 @@
                 <div class="form-actions">
                     <button type="button" class="btn btn-outline" onclick="closeModal('modalNovoGrupo')">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Criar Grupo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Editar Grupo -->
+    <div id="modalEditarGrupo" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Grupo</h3>
+                <button class="modal-close" onclick="closeModal('modalEditarGrupo')">&times;</button>
+            </div>
+            <form onsubmit="submitEditGroup(event)">
+                <input type="hidden" id="editGroupId">
+                <div class="form-group">
+                    <label for="editGroupName">Nome do Grupo:</label>
+                    <input type="text" id="editGroupName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editGroupDescription">Descrição:</label>
+                    <textarea id="editGroupDescription" rows="3" placeholder="Descrição opcional do grupo..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modalEditarGrupo')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
                 </div>
             </form>
         </div>
@@ -297,8 +323,25 @@
                 return;
             }
             
+            const isAdmin = group.user_role === 'admin';
+            
             document.getElementById('groupDetails').style.display = 'block';
-            document.getElementById('groupName').textContent = group.name;
+            
+            // Criar cabeçalho com botões de ação para admin
+            const groupNameHeader = document.getElementById('groupName');
+            if (isAdmin) {
+                groupNameHeader.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                        <h3 style="margin: 0;">${group.name}</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-outline" onclick="openEditGroupModal('${groupId}', '${group.name.replace(/'/g, "\\'")}', '${(group.description || '').replace(/'/g, "\\'")}')">Editar Nome</button>
+                            <button class="btn" style="background: #dc3545; color: white;" onclick="confirmDeleteGroup('${groupId}', '${group.name.replace(/'/g, "\\'")}')">Apagar Grupo</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                groupNameHeader.innerHTML = `<h3 style="margin: 0;">${group.name}</h3>`;
+            }
             
             switchTab('membros', null);
         }
@@ -529,6 +572,85 @@
                 showSuccess('Membro removido com sucesso!');
             } else {
                 showError(result.message || 'Erro ao remover membro.');
+            }
+        }
+
+        // Abrir modal de editar grupo
+        function openEditGroupModal(groupId, groupName, groupDescription) {
+            document.getElementById('editGroupId').value = groupId;
+            document.getElementById('editGroupName').value = groupName;
+            document.getElementById('editGroupDescription').value = groupDescription;
+            openModal('modalEditarGrupo');
+        }
+
+        // Submeter edição do grupo
+        async function submitEditGroup(e) {
+            e.preventDefault();
+            
+            const groupId = document.getElementById('editGroupId').value;
+            const groupData = {
+                name: document.getElementById('editGroupName').value,
+                description: document.getElementById('editGroupDescription').value
+            };
+            
+            // Validar nome
+            if (!groupData.name || groupData.name.trim() === '') {
+                showError('Por favor, insira o nome do grupo.');
+                return;
+            }
+            
+            // Validar profanidade
+            const nameCheck = checkProfanity(groupData.name);
+            if (!nameCheck.isClean) {
+                showError('O nome do grupo contém palavras inadequadas.');
+                return;
+            }
+            
+            if (groupData.description) {
+                const descCheck = checkProfanity(groupData.description);
+                if (!descCheck.isClean) {
+                    showError('A descrição do grupo contém palavras inadequadas.');
+                    return;
+                }
+            }
+            
+            try {
+                const result = await updateGroup(groupId, groupData);
+                
+                if (result.success) {
+                    closeModal('modalEditarGrupo');
+                    await loadGroups();
+                    await selectGroup(groupId);
+                    showSuccess('Grupo atualizado com sucesso!');
+                } else {
+                    showError(result.message || 'Erro ao atualizar grupo.');
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar grupo:', error);
+                showError('Erro ao atualizar grupo. Por favor, tente novamente.');
+            }
+        }
+
+        // Confirmar e apagar grupo
+        async function confirmDeleteGroup(groupId, groupName) {
+            if (!confirm(`Tem certeza que deseja apagar o grupo "${groupName}"?\n\nEsta ação não pode ser desfeita e todos os agendamentos serão perdidos.`)) {
+                return;
+            }
+            
+            try {
+                const result = await deleteGroup(groupId);
+                
+                if (result.success) {
+                    document.getElementById('groupDetails').style.display = 'none';
+                    currentGroupId = null;
+                    await loadGroups();
+                    showSuccess('Grupo apagado com sucesso!');
+                } else {
+                    showError(result.message || 'Erro ao apagar grupo.');
+                }
+            } catch (error) {
+                console.error('Erro ao apagar grupo:', error);
+                showError('Erro ao apagar grupo. Por favor, tente novamente.');
             }
         }
     </script>

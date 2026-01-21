@@ -19,6 +19,7 @@
             </ul>
             <div id="notificationDropdown" class="notification-dropdown" style="display: none;">
                 <button class="notification-btn" onclick="toggleNotifications()">
+                    <span style="filter: grayscale(1) brightness(0);">🔔</span>
                     <span id="notificationBadge" class="notification-badge" style="display: none;">0</span>
                 </button>
                 <div id="notificationMenu" class="notification-menu">
@@ -59,13 +60,13 @@
                 <p id="profileEmail"></p>
                 
                 <!-- Código do Utilizador -->
-                <div style="margin-top: 20px; padding: 18px; background: rgba(255, 107, 53, 0.1); border: 2px solid var(--primary-color); border-radius: 12px;">
+                <div style="margin-top: 20px; padding: 20px; background: #ffffff; border: 2px solid #e8733f; border-radius: 8px; box-shadow: 0 2px 8px rgba(232, 115, 63, 0.15);">
                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px;">
                         <div style="flex: 1;">
-                            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 8px; font-weight: 500;">Código de Utilizador</p>
-                            <div style="font-size: 1.3rem; font-weight: 700; letter-spacing: 2px; font-family: 'Courier New', monospace; color: var(--text-primary);" id="userCodeDisplay">------</div>
+                            <p style="color: #666666; font-size: 0.8rem; margin-bottom: 8px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.5px;">Código de Utilizador</p>
+                            <div style="font-size: 1.5rem; font-weight: 700; letter-spacing: 3px; font-family: 'Courier New', monospace; color: #2d2d2d;" id="userCodeDisplay">------</div>
                         </div>
-                        <button onclick="copyUserCode()" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem; white-space: nowrap;">
+                        <button onclick="copyUserCode()" class="btn" style="background: #e8733f; color: white; padding: 12px 24px; font-size: 0.9rem; white-space: nowrap; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
                             Copiar
                         </button>
                     </div>
