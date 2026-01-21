@@ -18,15 +18,28 @@ if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Get form data
+        // Get form data (for future server communication)
         const formData = {
             name: document.getElementById('name').value,
             email: document.getElementById('email').value,
             message: document.getElementById('message').value
         };
         
-        // Display success message (in a real application, this would send data to a server)
-        alert('Obrigado pela sua mensagem! Entraremos em contato em breve.');
+        // In a production environment, you would send formData to a server here
+        // For now, we'll show a success message
+        
+        // Create and display success message
+        const successMessage = document.createElement('div');
+        successMessage.className = 'form-success-message';
+        successMessage.textContent = 'Obrigado pela sua mensagem! Entraremos em contato em breve.';
+        successMessage.style.cssText = 'background: #10b981; color: white; padding: 1rem; border-radius: 0.375rem; margin-bottom: 1rem; text-align: center;';
+        
+        contactForm.insertBefore(successMessage, contactForm.firstChild);
+        
+        // Remove message after 5 seconds
+        setTimeout(() => {
+            successMessage.remove();
+        }, 5000);
         
         // Reset form
         contactForm.reset();
