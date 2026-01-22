@@ -125,6 +125,14 @@
                     <h4>Aproveitar Sobras</h4>
                     <p>Transforme sobras em novas refeições criativas para reduzir desperdício alimentar.</p>
                 </div>
+                <div class="tip-card">
+                    <h4>Carne Tenra</h4>
+                    <p>Deixe a carne repousar alguns minutos após cozinhar para redistribuir os sucos e ficar mais tenra.</p>
+                </div>
+                <div class="tip-card">
+                    <h4>Legumes Crocantes</h4>
+                    <p>Mergulhe vegetais em água gelada após cozinhar para manter a cor vibrante e textura crocante.</p>
+                </div>
             </div>
         </section>
 
@@ -285,7 +293,9 @@
             { title: 'Descascar Alho', text: 'Esmague levemente o dente de alho com a faca para soltar a pele mais facilmente.' },
             { title: 'Lavar Arroz', text: 'Lave o arroz antes de cozinhar para remover o excesso de amido e obter grãos mais soltos.' },
             { title: 'Aquecer a Panela', text: 'Deixe a panela aquecer bem antes de adicionar os alimentos para evitar que grudem.' },
-            { title: 'Cortar Cebola', text: 'Corte a cebola com a raiz intacta e coloque na água fria para reduzir o ardor nos olhos.' }
+            { title: 'Cortar Cebola', text: 'Corte a cebola com a raiz intacta e coloque na água fria para reduzir o ardor nos olhos.' },
+            { title: 'Carne Tenra', text: 'Deixe a carne repousar alguns minutos após cozinhar para redistribuir os sucos e ficar mais tenra.' },
+            { title: 'Legumes Crocantes', text: 'Mergulhe vegetais em água gelada após cozinhar para manter a cor vibrante e textura crocante.' }
         ];
 
         let currentTipIndex = 0;
@@ -294,9 +304,9 @@
             const tipsGrid = document.getElementById('tipsGrid');
             if (!tipsGrid) return;
 
-            // Selecionar 4 dicas aleatórias ou sequenciais
+            // Selecionar 6 dicas aleatórias ou sequenciais
             const displayTips = [];
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < 6; i++) {
                 displayTips.push(allTips[(currentTipIndex + i) % allTips.length]);
             }
 
@@ -315,7 +325,7 @@
             }, 300);
 
             // Avançar o índice
-            currentTipIndex = (currentTipIndex + 4) % allTips.length;
+            currentTipIndex = (currentTipIndex + 6) % allTips.length;
         }
 
         // Executar ao carregar a página
