@@ -100,6 +100,13 @@ if ($method === 'GET') {
                 $params[] = $category;
             }
             
+            // Adicionar filtro de subcategoria
+            $subcategory = $_GET['subcategory'] ?? '';
+            if (!empty($subcategory)) {
+                $sql .= " AND r.subcategory = ?";
+                $params[] = $subcategory;
+            }
+            
             if (!empty($search)) {
                 $sql .= " AND (r.title LIKE ? OR r.description LIKE ? OR r.ingredients LIKE ?)";
                 $searchTerm = "%$search%";

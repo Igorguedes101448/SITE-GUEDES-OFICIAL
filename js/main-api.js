@@ -171,13 +171,14 @@ function toggleUserDropdown(event) {
 // ===== GERENCIAMENTO DE RECEITAS =====
 
 // Obter todas as receitas
-async function getAllRecipes(category = '', search = '') {
+async function getAllRecipes(category = '', search = '', subcategory = '') {
     try {
         let url = `${API_BASE}/recipes.php`;
         const params = new URLSearchParams();
         
         if (category) params.append('category', category);
         if (search) params.append('search', search);
+        if (subcategory) params.append('subcategory', subcategory);
         
         if (params.toString()) {
             url += '?' + params.toString();
@@ -277,8 +278,8 @@ async function getRecipeById(recipeId) {
 }
 
 // Pesquisar receitas
-async function searchRecipes(query, category = '') {
-    return await getAllRecipes(category, query);
+async function searchRecipes(query, category = '', subcategory = '') {
+    return await getAllRecipes(category, query, subcategory);
 }
 
 // ===== GERENCIAMENTO DE GRUPOS =====
