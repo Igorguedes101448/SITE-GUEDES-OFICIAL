@@ -1,0 +1,257 @@
+┌─────────────────────────────────────────────────────────────────────┐
+│  🌟 SISTEMA DE AVALIAÇÕES E COMENTÁRIOS - CHEFGUEDES               │
+│  Instalação e Configuração Completa                                 │
+└─────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════
+  📦 PASSO 1: INSTALAR BASE DE DADOS
+═══════════════════════════════════════════════════════════════════════
+
+1. Abrir no navegador:
+   👉 http://localhost/SITE-GUEDES-OFICIAL-main/setup/install_ratings.php
+
+2. Aguardar mensagem de sucesso:
+   ✓ Tabela recipe_ratings criada com sucesso!
+   ✓ Tabela recipe_comments criada com sucesso!
+   ✓ Tabela user_infractions criada com sucesso!
+   ✓ Triggers criados com sucesso!
+   ✓ INSTALAÇÃO CONCLUÍDA COM SUCESSO!
+
+═══════════════════════════════════════════════════════════════════════
+  🧪 PASSO 2: VERIFICAR INSTALAÇÃO
+═══════════════════════════════════════════════════════════════════════
+
+1. Abrir no navegador:
+   👉 http://localhost/SITE-GUEDES-OFICIAL-main/tests/test_ratings_system.php
+
+2. Verificar que todos os testes passaram:
+   ✓ Todas as tabelas existem
+   ✓ Colunas adicionadas
+   ✓ Índices criados
+   ✓ Triggers configurados
+   ✓ TODOS OS TESTES PASSARAM!
+
+═══════════════════════════════════════════════════════════════════════
+  🎨 PASSO 3: INTEGRAR NO SITE
+═══════════════════════════════════════════════════════════════════════
+
+Opção A) TESTAR COM EXEMPLO
+───────────────────────────────────────────────────────────────────────
+Abrir exemplo pronto:
+👉 http://localhost/SITE-GUEDES-OFICIAL-main/pages/exemplo-ratings.html
+
+
+Opção B) INTEGRAR EM PÁGINAS EXISTENTES
+───────────────────────────────────────────────────────────────────────
+
+1️⃣  Abrir o ficheiro da página de receitas
+    (ex: pages/explorar-receitas.html ou detalhes-receita.html)
+
+2️⃣  Adicionar no <head>:
+
+    <!-- Font Awesome para as estrelas -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+3️⃣  Adicionar antes do </body>:
+
+    <!-- Sistema de Ratings -->
+    <script src="/js/ratings.js"></script>
+
+4️⃣  Adicionar onde quer mostrar as avaliações:
+
+    <div id="ratings-container"></div>
+
+5️⃣  Inicializar o sistema (no final do HTML):
+
+    <script>
+        // Obter ID da receita (ajustar conforme código existente)
+        const recipeId = 1; // MUDAR para o ID real
+
+        // Inicializar quando carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            const ratingsUI = new RatingsUI(recipeId, 'ratings-container');
+            ratingsUI.init();
+        });
+    </script>
+
+═══════════════════════════════════════════════════════════════════════
+  🧪 PASSO 4: TESTAR FUNCIONALIDADES
+═══════════════════════════════════════════════════════════════════════
+
+1. TESTAR AVALIAÇÕES
+   ─────────────────
+   ▶ Clicar em estrela (1-5)
+   ✓ Deve aparecer mensagem de sucesso
+   ✓ Média deve atualizar automaticamente
+   ✓ Sua avaliação deve ficar destacada
+
+2. TESTAR COMENTÁRIOS
+   ──────────────────
+   ▶ Escrever comentário válido
+   ✓ Deve aparecer na lista
+   ✓ Deve mostrar seu nome e avatar
+   ✓ Deve mostrar sua avaliação (se houver)
+
+3. TESTAR FILTRO DE PROFANIDADE
+   ─────────────────────────────
+   ▶ Tentar comentar com palavrão
+   ✗ Deve ser bloqueado
+   ✓ Deve receber notificação de aviso
+   ✓ Infração deve ser registada
+
+4. TESTAR LIMITES
+   ──────────────
+   ▶ Tentar adicionar 3º comentário
+   ✗ Deve ser bloqueado
+   ✓ Mensagem: "Limite de 2 comentários atingido"
+
+5. VERIFICAR NOTIFICAÇÕES
+   ──────────────────────
+   ✓ Autor recebe notificação de nova avaliação
+   ✓ Autor recebe notificação de novo comentário
+   ✓ Utilizador recebe notificação de infração
+
+═══════════════════════════════════════════════════════════════════════
+  📱 TESTAR RESPONSIVIDADE
+═══════════════════════════════════════════════════════════════════════
+
+Desktop (1200px+)     → Layout completo
+Tablet (768-1199px)   → Layout adaptado
+Mobile (<768px)       → Layout empilhado
+
+═══════════════════════════════════════════════════════════════════════
+  📚 DOCUMENTAÇÃO DISPONÍVEL
+═══════════════════════════════════════════════════════════════════════
+
+docs/
+├── README_RATINGS.md                  → Resumo completo
+├── INSTALACAO_RAPIDA_RATINGS.md       → Guia rápido
+└── SISTEMA_RATINGS_COMENTARIOS.md     → Documentação técnica
+
+pages/
+└── exemplo-ratings.html               → Exemplo funcional
+
+tests/
+└── test_ratings_system.php            → Script de verificação
+
+═══════════════════════════════════════════════════════════════════════
+  ✨ FUNCIONALIDADES IMPLEMENTADAS
+═══════════════════════════════════════════════════════════════════════
+
+⭐ AVALIAÇÕES
+   ✓ Sistema de estrelas (1-5)
+   ✓ 1 avaliação por utilizador (pode atualizar)
+   ✓ Média calculada automaticamente
+   ✓ Distribuição de estrelas (gráfico)
+
+💬 COMENTÁRIOS
+   ✓ Máximo 2 comentários por utilizador
+   ✓ Mínimo 3 caracteres, máximo 1000
+   ✓ Pode deletar seus comentários
+   ✓ Admin pode deletar qualquer comentário
+
+🛡️ PROFANIDADE
+   ✓ Lista extensa de palavras proibidas (PT/EN)
+   ✓ Detecção automática
+   ✓ Registro de infrações
+   ✓ Notificações de aviso
+
+🔔 NOTIFICAÇÕES
+   ✓ Nova avaliação → notifica autor
+   ✓ Novo comentário → notifica autor
+   ✓ Infração → notifica utilizador
+
+📊 BASE DE DADOS
+   ✓ 3 novas tabelas
+   ✓ 2 colunas adicionadas em recipes
+   ✓ 3 triggers automáticos
+   ✓ Índices para performance
+
+═══════════════════════════════════════════════════════════════════════
+  🔧 CONFIGURAÇÕES PERSONALIZÁVEIS
+═══════════════════════════════════════════════════════════════════════
+
+1. PALAVRAS PROIBIDAS
+   📁 api/profanity-filter.php
+   → Adicionar/remover palavras da lista
+
+2. LIMITES
+   📁 api/ratings.php
+   → Alterar máximo de comentários (padrão: 2)
+   → Alterar tamanho mínimo/máximo
+
+3. CORES DAS ESTRELAS
+   📁 css/styles.css
+   → Alterar cor das estrelas (.star-filled)
+
+4. MENSAGENS
+   📁 js/ratings.js
+   → Customizar showSuccess() e showError()
+
+═══════════════════════════════════════════════════════════════════════
+  🚨 RESOLUÇÃO DE PROBLEMAS
+═══════════════════════════════════════════════════════════════════════
+
+PROBLEMA: Estrelas não aparecem
+SOLUÇÃO: Verificar se Font Awesome está carregado
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/.../all.min.css">
+
+PROBLEMA: Erro 401 (Não autorizado)
+SOLUÇÃO: Utilizador precisa estar logado
+         Verificar: localStorage.getItem('sessionToken')
+
+PROBLEMA: Estilos não aplicados
+SOLUÇÃO: Verificar se styles.css está incluído
+         <link rel="stylesheet" href="/css/styles.css">
+
+PROBLEMA: "Receita não encontrada"
+SOLUÇÃO: Verificar se recipeId está correto
+         console.log('Recipe ID:', recipeId);
+
+PROBLEMA: Triggers não funcionam
+SOLUÇÃO: Re-executar install_ratings.php
+
+═══════════════════════════════════════════════════════════════════════
+  ✅ CHECKLIST FINAL
+═══════════════════════════════════════════════════════════════════════
+
+BASE DE DADOS
+ ☐ Executar install_ratings.php
+ ☐ Executar test_ratings_system.php
+ ☐ Verificar todas as tabelas criadas
+ ☐ Verificar triggers funcionando
+
+FRONTEND
+ ☐ Adicionar Font Awesome
+ ☐ Incluir ratings.js
+ ☐ Adicionar container ratings-container
+ ☐ Inicializar RatingsUI
+ ☐ Verificar estilos (styles.css)
+
+TESTES
+ ☐ Avaliar receita (1-5 estrelas)
+ ☐ Adicionar comentário válido
+ ☐ Testar filtro de profanidade
+ ☐ Verificar limite de 2 comentários
+ ☐ Verificar notificações
+ ☐ Testar em mobile
+
+═══════════════════════════════════════════════════════════════════════
+  🎉 PRONTO PARA USO!
+═══════════════════════════════════════════════════════════════════════
+
+Todos os requisitos implementados:
+✓ Avaliação por estrelas (elegante e funcional)
+✓ Sistema de comentários (máx. 2 por utilizador)
+✓ Filtro de profanidade ativo
+✓ Sistema de infrações com notificações
+✓ Média calculada automaticamente
+✓ Notificações para autores
+
+📧 Suporte: Consultar documentação em docs/
+🔧 Dúvidas: Verificar exemplo em pages/exemplo-ratings.html
+
+═══════════════════════════════════════════════════════════════════════
+
+Desenvolvido para ChefGuedes 🍳
+Versão 1.0.0 | Fevereiro 2026

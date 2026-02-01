@@ -4,7 +4,7 @@
    ============================================ */
 
 // URL base da API
-const API_BASE = window.location.origin + '/siteguedes/api';
+const API_BASE = window.location.origin + '/SITE-GUEDES-OFICIAL-main/SITE-GUEDES-OFICIAL-main/api';
 
 // ===== GESTÃO DE SESSÃO =====
 
