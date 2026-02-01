@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receita - ChefGuedes</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <!-- Font Awesome para as estrelas -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
@@ -60,6 +62,7 @@
     <script src="../js/auth-api.js"></script>
     <script src="../js/main-api.js"></script>
     <script src="../js/receitas-portuguesas.js"></script>
+    <script src="../js/ratings.js"></script>
     <script>
         // Obter ID da receita da URL
         function getReceitaIdFromURL() {
@@ -188,11 +191,66 @@
                 <div class="receita-actions" id="recipeActions">
                     <a href="explorar-receitas.html" class="btn btn-primary">Voltar às Receitas</a>
                 </div>
+
+                <!-- Sistema de Avaliações e Comentários -->
+                <div id="ratings-container"></div>
             `;
 
             // Adicionar botão de apagar se o utilizador for o autor
             if (!isReceitaPortuguesa && receita) {
                 checkAndAddDeleteButton(receita);
+            }
+
+            // Inicializar sistema de avaliações e comentários (apenas para receitas da BD)
+            if (!isReceitaPortuguesa && receitaId) {
+                console.log('=== DEBUG RATINGS ===');
+                console.log('Receita ID:', receitaId);
+                console.log('É receita portuguesa?', isReceitaPortuguesa);
+                console.log('Container existe?', !!document.getElementById('ratings-container'));
+                
+                try {
+                    const ratingsUI = new RatingsUI(receitaId, 'ratings-container');
+                    await ratingsUI.init();
+                    console.log('✅ Sistema de ratings inicializado com sucesso!');
+                } catch (error) {
+                    console.error('❌ Erro ao inicializar ratings:', error);
+                    const container = document.getElementById('ratings-container');
+                    if (container) {
+                        container.innerHTML = `
+                            <div class="ratings-section">
+                                <div style="text-align: center; padding: 2rem; background: #fff3cd; border-radius: var(--border-radius); border: 2px solid #ffc107;">
+                                    <p style="color: #856404; font-size: 1.1rem; margin-bottom: 0.5rem;">
+                                        ⚠️ Erro ao carregar sistema de avaliações
+                                    </p>
+                                    <p style="color: #856404; font-size: 0.9rem;">
+                                        ${error.message || 'Erro desconhecido'}
+                                    </p>
+                                    <p style="color: #856404; font-size: 0.85rem; margin-top: 1rem;">
+                                        Abra o console (F12) para mais detalhes ou execute:
+                                        <a href="../tests/debug_ratings.php" target="_blank" style="color: #0066cc;">debug_ratings.php</a>
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            } else if (isReceitaPortuguesa) {
+                console.log('ℹ️ Receita portuguesa - sistema de ratings não disponível');
+                const container = document.getElementById('ratings-container');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="ratings-section">
+                            <div style="text-align: center; padding: 2rem; background: var(--bg-secondary); border-radius: var(--border-radius);">
+                                <p style="color: var(--text-secondary);">
+                                    ℹ️ Receitas de exemplo não podem ser avaliadas.
+                                </p>
+                                <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 0.5rem;">
+                                    Crie uma receita própria para usar o sistema de avaliações!
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                }
             }
         }
 

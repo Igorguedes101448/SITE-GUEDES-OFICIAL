@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Conexão - ChefGuedes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success {
+            border-left: 4px solid #2a9d8f;
+        }
+        .error {
+            border-left: 4px solid #e63946;
+        }
+        h1 {
+            color: #d4572a;
+        }
+        button {
+            background: #d4572a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #b84520;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Teste de Conexão - ChefGuedes</h1>
+    
+    <div class="test-box">
+        <h2>1. Teste de Conexão PHP</h2>
+        <button onclick="testPHPConnection()">Testar Conexão PHP</button>
+        <div id="php-result"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>2. Teste de API de Usuários</h2>
+        <button onclick="testUsersAPI()">Testar API de Usuários</button>
+        <div id="users-result"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>3. Teste de Login (Dados de Teste)</h2>
+        <p><small>Use um email existente no banco de dados para testar</small></p>
+        <input type="email" id="test-email" placeholder="Email" style="width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px;">
+        <input type="password" id="test-password" placeholder="Senha" style="width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px;">
+        <button onclick="testLogin()">Testar Login</button>
+        <div id="login-result"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>4. Informações do Sistema</h2>
+        <button onclick="showSystemInfo()">Mostrar Info</button>
+        <div id="system-info"></div>
+    </div>
+
+    <script>
+        // Caminho base da API
+        const API_BASE = window.location.origin + '/SITE-GUEDES-OFICIAL-main/SITE-GUEDES-OFICIAL-main/api';
+        
+        async function testPHPConnection() {
+            const resultDiv = document.getElementById('php-result');
+            resultDiv.innerHTML = '<p>Testando conexão...</p>';
+            
+            try {
+                const response = await fetch('test_connection.php', {
+                    cache: 'no-cache',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const text = await response.text();
+                let result;
+                
+                try {
+                    result = JSON.parse(text);
+                } catch (e) {
+                    throw new Error(`Resposta inválida: ${text.substring(0, 100)}`);
+                }
+                
+                resultDiv.innerHTML = `
+                    <div class="${result.success ? 'success' : 'error'}" style="padding: 10px; margin-top: 10px;">
+                        <strong>Status:</strong> ${result.success ? '✅ Sucesso' : '❌ Erro'}<br>
+                        <strong>Mensagem:</strong> ${result.message}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error" style="padding: 10px; margin-top: 10px;">
+                        <strong>❌ Erro de Conexão</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        async function testUsersAPI() {
+            const resultDiv = document.getElementById('users-result');
+            resultDiv.innerHTML = '<p>Testando API...</p>';
+            
+            try {
+                // Teste simples: tentar fazer login com credenciais inválidas
+                const response = await fetch(`${API_BASE}/users.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'login',
+                        email: 'teste@api.com',
+                        password: 'testando123'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="success" style="padding: 10px; margin-top: 10px;">
+                        <strong>✅ API Acessível e Funcionando</strong><br>
+                        <strong>Status HTTP:</strong> ${response.status}<br>
+                        <strong>A API está respondendo corretamente!</strong><br>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error" style="padding: 10px; margin-top: 10px;">
+                        <strong>❌ Erro ao acessar API</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        async function testLogin() {
+            const resultDiv = document.getElementById('login-result');
+            const email = document.getElementById('test-email').value || 'teste@teste.com';
+            const password = document.getElementById('test-password').value || 'teste123';
+            
+            resultDiv.innerHTML = '<p>Testando login...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/users.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'login',
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="${result.success ? 'success' : 'error'}" style="padding: 10px; margin-top: 10px;">
+                        <strong>${result.success ? '✅' : '❌'} Resposta do Login</strong><br>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                        ${result.success ? '<br><strong>🎉 Login funciona corretamente!</strong>' : '<br><em>Nota: Email ou senha incorretos é normal se não existir no banco.</em>'}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error" style="padding: 10px; margin-top: 10px;">
+                        <strong>❌ Erro ao testar login</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        function showSystemInfo() {
+            const resultDiv = document.getElementById('system-info');
+            
+            resultDiv.innerHTML = `
+                <div style="padding: 10px; margin-top: 10px;">
+                    <strong>URL Base:</strong> ${window.location.origin}<br>
+                    <strong>Caminho Atual:</strong> ${window.location.pathname}<br>
+                    <strong>API Base:</strong> ${API_BASE}<br>
+                    <strong>Navegador:</strong> ${navigator.userAgent}
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

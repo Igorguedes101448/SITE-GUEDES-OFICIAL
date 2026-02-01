@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo - Sistema de Avaliações e Comentários</title>
+    
+    <!-- Font Awesome para os ícones das estrelas -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS do site -->
+    <link rel="stylesheet" href="../css/styles.css">
+    
+    <style>
+        body {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-primary);
+        }
+        
+        .recipe-container {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+        }
+        
+        .recipe-title {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .recipe-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="recipe-container">
+        <h1 class="recipe-title">Bacalhau à Brás</h1>
+        <p class="recipe-description">
+            O Bacalhau à Brás é uma das receitas mais emblemáticas da culinária portuguesa.
+            Com batata palha, ovos mexidos e bacalhau desfiado, é um prato que conquista todos!
+        </p>
+    </div>
+
+    <!-- Container onde o sistema de ratings será carregado -->
+    <div id="ratings-container"></div>
+
+    <!-- Scripts necessários -->
+    <script src="../js/ratings.js"></script>
+    
+    <script>
+        // ============================================
+        // Exemplo de Integração
+        // ============================================
+        
+        // Simular que temos o ID da receita (normalmente viria da URL ou contexto da página)
+        const recipeId = 1; // ID da receita
+        
+        // Inicializar o sistema de ratings quando a página carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            // Criar instância do sistema de ratings
+            const ratingsUI = new RatingsUI(recipeId, 'ratings-container');
+            
+            // Inicializar
+            ratingsUI.init().catch(error => {
+                console.error('Erro ao inicializar sistema de ratings:', error);
+            });
+        });
+        
+        // ============================================
+        // Integração em Páginas Existentes
+        // ============================================
+        
+        /*
+        Para integrar em páginas existentes como explorar-receitas.html:
+        
+        1. Adicionar Font Awesome (se ainda não tiver):
+           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+        2. Adicionar o script ratings.js:
+           <script src="/js/ratings.js"></script>
+        
+        3. Adicionar um container na página onde os ratings devem aparecer:
+           <div id="ratings-container"></div>
+        
+        4. Inicializar o sistema:
+           const recipeId = obterIdDaReceita(); // Função que obtém o ID da receita atual
+           const ratingsUI = new RatingsUI(recipeId, 'ratings-container');
+           ratingsUI.init();
+        */
+    </script>
+</body>
+</html>

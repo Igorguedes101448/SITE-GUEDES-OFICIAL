@@ -163,9 +163,10 @@
         async function filterRecipes() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const category = document.getElementById('categoryFilter').value;
+            const subcategory = document.getElementById('subcategoryFilter').value;
             
             // Buscar receitas da base de dados
-            allRecipes = await searchRecipes(searchTerm, category);
+            allRecipes = await searchRecipes(searchTerm, category, subcategory);
             
             // Resetar para a primeira página quando filtrar
             currentPage = 1;

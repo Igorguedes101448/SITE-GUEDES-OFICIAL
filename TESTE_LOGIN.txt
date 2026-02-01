@@ -1,0 +1,66 @@
+═══════════════════════════════════════════════════════
+   GUIA DE TESTE - ChefGuedes Login
+═══════════════════════════════════════════════════════
+
+✅ CORREÇÃO APLICADA:
+   O caminho da API foi corrigido em js/auth-api.js
+   
+   Antes: /siteguedes/api
+   Agora:  /SITE-GUEDES-OFICIAL-main/SITE-GUEDES-OFICIAL-main/api
+
+═══════════════════════════════════════════════════════
+
+📋 USUÁRIOS DISPONÍVEIS NO BANCO:
+
+1. Admin
+   Email: admin@chefguedes.pt
+   (Precisa redefinir senha ou criar novo admin)
+
+2. Igor  
+   Email: igor12345@gmail.com
+   (Precisa saber a senha original)
+
+3. Teste
+   Email: teste123@gmail.com
+   (Precisa saber a senha original)
+
+4. Shina
+   Email: martimssantos08@gmail.com
+   (Precisa saber a senha original)
+
+═══════════════════════════════════════════════════════
+
+🧪 PÁGINAS DE TESTE:
+
+1. Teste de Diagnóstico Completo:
+   http://localhost/SITE-GUEDES-OFICIAL-main/SITE-GUEDES-OFICIAL-main/test_debug.html
+
+2. Página de Login:
+   http://localhost/SITE-GUEDES-OFICIAL-main/SITE-GUEDES-OFICIAL-main/login.html
+
+3. Página de Registro (criar nova conta):
+   http://localhost/SITE-GUEDES-OFICIAL-main/SITE-GUEDES-OFICIAL-main/registo.html
+
+═══════════════════════════════════════════════════════
+
+💡 RECOMENDAÇÃO:
+
+Se não souber as senhas dos usuários existentes, crie uma nova conta em:
+http://localhost/SITE-GUEDES-OFICIAL-main/SITE-GUEDES-OFICIAL-main/registo.html
+
+Requisitos:
+- Nome de usuário: mínimo 3 caracteres
+- Email válido
+- Senha: mínimo 6 caracteres
+
+═══════════════════════════════════════════════════════
+
+🔧 LIMPEZA DE CACHE:
+
+Se ainda aparecer erro "Erro de conexão com o servidor":
+1. Pressione Ctrl + Shift + Delete
+2. Selecione "Imagens e arquivos em cache"
+3. Clique em "Limpar dados"
+4. Recarregue a página (F5)
+
+═══════════════════════════════════════════════════════
